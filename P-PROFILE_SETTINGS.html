@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>心愈伴 - 个人资料设置</title>
+    <script src="https://unpkg.byted-static.com/coze/space_ppt_lib/1.0.3-alpha.12/lib/tailwindcss.js"></script>
+    <script src="https://unpkg.byted-static.com/fortawesome/fontawesome-free/6.7.2/js/all.min.js" data-auto-replace-svg="nest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#6366f1',
+                        secondary: '#8b5cf6',
+                        tertiary: '#06b6d4',
+                        success: '#10b981',
+                        danger: '#ef4444',
+                        warning: '#f59e0b',
+                        info: '#3b82f6',
+                        'glass-bg': 'rgba(255, 255, 255, 0.1)',
+                        'glass-border': 'rgba(255, 255, 255, 0.2)',
+                        'dark-glass': 'rgba(0, 0, 0, 0.1)',
+                    },
+                    backdropBlur: {
+                        'xs': '2px',
+                    },
+                    boxShadow: {
+                        'glass': '0 8px 32px 0 rgba(31, 38, 135, 0.37)',
+                        'glass-inset': 'inset 0 1px 0 0 rgba(255, 255, 255, 0.05)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        }
+        
+        .glass-button {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .glass-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.4);
+        }
+        
+        .glass-input {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+        
+        .glass-input:focus {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.4);
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.2);
+        }
+        
+        .glass-input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+        
+        .gradient-text {
+            background: linear-gradient(45deg, #ffffff, #e5e7eb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .save-button {
+            background: linear-gradient(45deg, #6366f1, #8b5cf6);
+            transition: all 0.3s ease;
+        }
+        
+        .save-button:hover {
+            background: linear-gradient(45deg, #5855eb, #7c3aed);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px 0 rgba(99, 102, 241, 0.4);
+        }
+        
+        .avatar-upload {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .avatar-upload:hover {
+            transform: scale(1.05);
+            box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.4);
+        }
+        
+        .avatar-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            padding: 8px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .avatar-upload:hover .avatar-overlay {
+            opacity: 1;
+        }
+        
+        .floating-animation {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .modal-overlay {
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+        
+        .modal-content {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .option-item {
+            transition: all 0.3s ease;
+        }
+        
+        .option-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .option-item.selected {
+            background: rgba(99, 102, 241, 0.3);
+            border-color: rgba(99, 102, 241, 0.5);
+        }
+    </style>
+</head>
+<body class="font-sans text-white overflow-x-hidden">
+    <!-- iOS状态栏 -->
+    <div id="status-bar" class="flex justify-between items-center px-6 py-2 text-sm font-medium">
+        <div class="flex items-center space-x-1">
+            <span>9:41</span>
+        </div>
+        <div class="flex items-center space-x-1">
+            <i class="fas fa-signal text-xs"></i>
+            <i class="fas fa-wifi text-xs"></i>
+            <div class="w-6 h-3 border border-white rounded-sm">
+                <div class="w-4 h-1.5 bg-white rounded-sm m-0.5"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 主要内容区域 -->
+    <div id="main-content" class="px-4 pb-6">
+        <!-- 顶部导航栏 -->
+        <header id="top-nav" class="flex items-center py-4 mb-6">
+            <button id="back-btn" class="p-2 glass-button rounded-full mr-4">
+                <i class="fas fa-arrow-left text-lg"></i>
+            </button>
+            <h1 id="page-title" class="text-xl font-semibold gradient-text">个人资料设置</h1>
+        </header>
+
+        <!-- 头像上传区域 -->
+        <section id="avatar-section" class="glass-card rounded-3xl p-6 mb-6 floating-animation">
+            <h2 id="avatar-title" class="text-lg font-semibold mb-4 gradient-text">头像设置</h2>
+            <div class="flex justify-center">
+                <div id="avatar-upload" class="avatar-upload w-32 h-32 rounded-full glass-card flex items-center justify-center cursor-pointer">
+                    <img id="user-avatar" src="https://s.coze.cn/image/K0FMBk6ENmI/" 
+                         alt="用户头像" class="w-full h-full object-cover rounded-full">
+                    <div class="avatar-overlay rounded-full flex items-center justify-center">
+                        <i class="fas fa-camera text-white text-lg"></i>
+                    </div>
+                </div>
+            </div>
+            <p id="avatar-hint" class="text-center text-sm text-white/70 mt-3">点击头像更换照片</p>
+        </section>
+
+        <!-- 个人信息表单 -->
+        <section id="profile-form" class="space-y-4 mb-8">
+            <!-- 昵称 -->
+            <div id="nickname-section" class="glass-card rounded-2xl p-4">
+                <label for="nickname-input" class="block text-sm font-medium text-white/80 mb-2">昵称</label>
+                <input type="text" id="nickname-input" class="glass-input w-full px-4 py-3 rounded-xl text-white placeholder-white/60" 
+                       placeholder="请输入昵称" value="小雨">
+            </div>
+
+            <!-- 性别 -->
+            <div id="gender-section" class="glass-card rounded-2xl p-4">
+                <label class="block text-sm font-medium text-white/80 mb-3">性别</label>
+                <button id="gender-selector" class="glass-button w-full px-4 py-3 rounded-xl text-left flex items-center justify-between">
+                    <span id="gender-value" class="text-white">女</span>
+                    <i class="fas fa-chevron-right text-white/60"></i>
+                </button>
+            </div>
+
+            <!-- 年龄 -->
+            <div id="age-section" class="glass-card rounded-2xl p-4">
+                <label class="block text-sm font-medium text-white/80 mb-3">年龄</label>
+                <button id="age-selector" class="glass-button w-full px-4 py-3 rounded-xl text-left flex items-center justify-between">
+                    <span id="age-value" class="text-white">25岁</span>
+                    <i class="fas fa-chevron-right text-white/60"></i>
+                </button>
+            </div>
+
+            <!-- 地区 -->
+            <div id="region-section" class="glass-card rounded-2xl p-4">
+                <label class="block text-sm font-medium text-white/80 mb-3">地区</label>
+                <button id="region-selector" class="glass-button w-full px-4 py-3 rounded-xl text-left flex items-center justify-between">
+                    <span id="region-value" class="text-white">北京市</span>
+                    <i class="fas fa-chevron-right text-white/60"></i>
+                </button>
+            </div>
+        </section>
+
+        <!-- 保存按钮 -->
+        <button id="save-btn" class="save-button w-full py-4 rounded-2xl text-white font-semibold text-lg shadow-lg">
+            <i class="fas fa-save mr-2"></i>
+            保存设置
+        </button>
+    </div>
+
+    <!-- 性别选择弹窗 -->
+    <div id="gender-modal" class="modal-overlay fixed inset-0 z-50 flex items-center justify-center px-4 hidden">
+        <div class="modal-content w-full max-w-sm rounded-3xl p-6">
+            <h3 class="text-lg font-semibold mb-4 gradient-text">选择性别</h3>
+            <div class="space-y-2">
+                <div class="option-item selected p-3 rounded-xl border border-white/20 cursor-pointer" data-value="男">
+                    <span class="text-white">男</span>
+                </div>
+                <div class="option-item p-3 rounded-xl border border-white/20 cursor-pointer" data-value="女">
+                    <span class="text-white">女</span>
+                </div>
+                <div class="option-item p-3 rounded-xl border border-white/20 cursor-pointer" data-value="保密">
+                    <span class="text-white">保密</span>
+                </div>
+            </div>
+            <div class="flex space-x-3 mt-6">
+                <button id="gender-cancel" class="glass-button flex-1 py-3 rounded-xl text-white">取消</button>
+                <button id="gender-confirm" class="save-button flex-1 py-3 rounded-xl text-white">确定</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 年龄选择弹窗 -->
+    <div id="age-modal" class="modal-overlay fixed inset-0 z-50 flex items-center justify-center px-4 hidden">
+        <div class="modal-content w-full max-w-sm rounded-3xl p-6">
+            <h3 class="text-lg font-semibold mb-4 gradient-text">选择年龄</h3>
+            <div class="max-h-64 overflow-y-auto space-y-2">
+                <!-- 年龄选项将通过JavaScript动态生成 -->
+            </div>
+            <div class="flex space-x-3 mt-6">
+                <button id="age-cancel" class="glass-button flex-1 py-3 rounded-xl text-white">取消</button>
+                <button id="age-confirm" class="save-button flex-1 py-3 rounded-xl text-white">确定</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 地区选择弹窗 -->
+    <div id="region-modal" class="modal-overlay fixed inset-0 z-50 flex items-center justify-center px-4 hidden">
+        <div class="modal-content w-full max-w-sm rounded-3xl p-6">
+            <h3 class="text-lg font-semibold mb-4 gradient-text">选择地区</h3>
+            <div class="max-h-64 overflow-y-auto space-y-2">
+                <div class="option-item selected p-3 rounded-xl border border-white/20 cursor-pointer" data-value="北京市">
+                    <span class="text-white">北京市</span>
+                </div>
+                <div class="option-item p-3 rounded-xl border border-white/20 cursor-pointer" data-value="上海市">
+                    <span class="text-white">上海市</span>
+                </div>
+                <div class="option-item p-3 rounded-xl border border-white/20 cursor-pointer" data-value="广州市">
+                    <span class="text-white">广州市</span>
+                </div>
+                <div class="option-item p-3 rounded-xl border border-white/20 cursor-pointer" data-value="深圳市">
+                    <span class="text-white">深圳市</span>
+                </div>
+                <div class="option-item p-3 rounded-xl border border-white/20 cursor-pointer" data-value="杭州市">
+                    <span class="text-white">杭州市</span>
+                </div>
+                <div class="option-item p-3 rounded-xl border border-white/20 cursor-pointer" data-value="成都市">
+                    <span class="text-white">成都市</span>
+                </div>
+                <div class="option-item p-3 rounded-xl border border-white/20 cursor-pointer" data-value="武汉市">
+                    <span class="text-white">武汉市</span>
+                </div>
+                <div class="option-item p-3 rounded-xl border border-white/20 cursor-pointer" data-value="西安市">
+                    <span class="text-white">西安市</span>
+                </div>
+                <div class="option-item p-3 rounded-xl border border-white/20 cursor-pointer" data-value="南京市">
+                    <span class="text-white">南京市</span>
+                </div>
+                <div class="option-item p-3 rounded-xl border border-white/20 cursor-pointer" data-value="重庆市">
+                    <span class="text-white">重庆市</span>
+                </div>
+            </div>
+            <div class="flex space-x-3 mt-6">
+                <button id="region-cancel" class="glass-button flex-1 py-3 rounded-xl text-white">取消</button>
+                <button id="region-confirm" class="save-button flex-1 py-3 rounded-xl text-white">确定</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 成功提示弹窗 -->
+    <div id="success-toast" class="fixed top-20 left-1/2 transform -translate-x-1/2 z-50 hidden">
+        <div class="glass-card rounded-2xl px-6 py-3 flex items-center space-x-2">
+            <i class="fas fa-check-circle text-success"></i>
+            <span class="text-white">保存成功</span>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            let selectedGender = '女';
+            let selectedAge = 25;
+            let selectedRegion = '北京市';
+
+            // 返回按钮点击事件
+            document.querySelector('#back-btn').addEventListener('click', function() {
+                // 检查是否有未保存的更改
+                const nickname = document.querySelector('#nickname-input').value;
+                const currentGender = document.querySelector('#gender-value').textContent;
+                const currentAge = parseInt(document.querySelector('#age-value').textContent);
+                const currentRegion = document.querySelector('#region-value').textContent;
+                
+                if (nickname !== '小雨' || currentGender !== '女' || currentAge !== 25 || currentRegion !== '北京市') {
+                    if (confirm('您有未保存的更改，确定要离开吗？')) {
+                        window.location.href = 'P-HOME.html';
+                    }
+                } else {
+                    window.location.href = 'P-HOME.html';
+                }
+            });
+
+            // 头像上传功能
+            document.querySelector('#avatar-upload').addEventListener('click', function() {
+                console.log('需要调用第三方接口实现相机或相册选择功能');
+                // 注释：此功能需要调用设备相机或相册API，在原型阶段仅做UI展示
+            });
+
+            // 性别选择器点击事件
+            document.querySelector('#gender-selector').addEventListener('click', function() {
+                document.querySelector('#gender-modal').classList.remove('hidden');
+                // 设置当前选中状态
+                document.querySelectorAll('#gender-modal .option-item').forEach(item => {
+                    item.classList.remove('selected');
+                    if (item.dataset.value === selectedGender) {
+                        item.classList.add('selected');
+                    }
+                });
+            });
+
+            // 年龄选择器点击事件
+            document.querySelector('#age-selector').addEventListener('click', function() {
+                generateAgeOptions();
+                document.querySelector('#age-modal').classList.remove('hidden');
+            });
+
+            // 地区选择器点击事件
+            document.querySelector('#region-selector').addEventListener('click', function() {
+                document.querySelector('#region-modal').classList.remove('hidden');
+                // 设置当前选中状态
+                document.querySelectorAll('#region-modal .option-item').forEach(item => {
+                    item.classList.remove('selected');
+                    if (item.dataset.value === selectedRegion) {
+                        item.classList.add('selected');
+                    }
+                });
+            });
+
+            // 性别选项点击事件
+            document.querySelectorAll('#gender-modal .option-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    document.querySelectorAll('#gender-modal .option-item').forEach(opt => opt.classList.remove('selected'));
+                    this.classList.add('selected');
+                    selectedGender = this.dataset.value;
+                });
+            });
+
+            // 地区选项点击事件
+            document.querySelectorAll('#region-modal .option-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    document.querySelectorAll('#region-modal .option-item').forEach(opt => opt.classList.remove('selected'));
+                    this.classList.add('selected');
+                    selectedRegion = this.dataset.value;
+                });
+            });
+
+            // 性别确认按钮
+            document.querySelector('#gender-confirm').addEventListener('click', function() {
+                document.querySelector('#gender-value').textContent = selectedGender;
+                document.querySelector('#gender-modal').classList.add('hidden');
+            });
+
+            // 性别取消按钮
+            document.querySelector('#gender-cancel').addEventListener('click', function() {
+                document.querySelector('#gender-modal').classList.add('hidden');
+            });
+
+            // 年龄确认按钮
+            document.querySelector('#age-confirm').addEventListener('click', function() {
+                const selectedOption = document.querySelector('#age-modal .option-item.selected');
+                if (selectedOption) {
+                    selectedAge = parseInt(selectedOption.dataset.value);
+                    document.querySelector('#age-value').textContent = selectedAge + '岁';
+                }
+                document.querySelector('#age-modal').classList.add('hidden');
+            });
+
+            // 年龄取消按钮
+            document.querySelector('#age-cancel').addEventListener('click', function() {
+                document.querySelector('#age-modal').classList.add('hidden');
+            });
+
+            // 地区确认按钮
+            document.querySelector('#region-confirm').addEventListener('click', function() {
+                document.querySelector('#region-value').textContent = selectedRegion;
+                document.querySelector('#region-modal').classList.add('hidden');
+            });
+
+            // 地区取消按钮
+            document.querySelector('#region-cancel').addEventListener('click', function() {
+                document.querySelector('#region-modal').classList.add('hidden');
+            });
+
+            // 保存按钮点击事件
+            document.querySelector('#save-btn').addEventListener('click', function() {
+                const nickname = document.querySelector('#nickname-input').value.trim();
+                
+                if (!nickname) {
+                    alert('请输入昵称');
+                    return;
+                }
+
+                // 模拟保存过程
+                const saveBtn = this;
+                const originalText = saveBtn.innerHTML;
+                saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>保存中...';
+                saveBtn.disabled = true;
+
+                setTimeout(() => {
+                    // 显示成功提示
+                    const toast = document.querySelector('#success-toast');
+                    toast.classList.remove('hidden');
+                    
+                    setTimeout(() => {
+                        toast.classList.add('hidden');
+                        // 跳转到个人中心页
+                        window.location.href = 'P-PERSONAL_CENTER.html';
+                    }, 2000);
+                }, 1000);
+            });
+
+            // 生成年龄选项
+            function generateAgeOptions() {
+                const ageContainer = document.querySelector('#age-modal .max-h-64');
+                ageContainer.innerHTML = '';
+                
+                for (let age = 12; age <= 80; age++) {
+                    const option = document.createElement('div');
+                    option.className = `option-item p-3 rounded-xl border border-white/20 cursor-pointer ${age === selectedAge ? 'selected' : ''}`;
+                    option.dataset.value = age;
+                    option.innerHTML = `<span class="text-white">${age}岁</span>`;
+                    
+                    option.addEventListener('click', function() {
+                        document.querySelectorAll('#age-modal .option-item').forEach(opt => opt.classList.remove('selected'));
+                        this.classList.add('selected');
+                    });
+                    
+                    ageContainer.appendChild(option);
+                }
+            }
+
+            // 点击弹窗背景关闭弹窗
+            document.querySelectorAll('.modal-overlay').forEach(modal => {
+                modal.addEventListener('click', function(e) {
+                    if (e.target === this) {
+                        this.classList.add('hidden');
+                    }
+                });
+            });
+
+            // 输入框焦点效果
+            document.querySelector('#nickname-input').addEventListener('focus', function() {
+                this.parentElement.style.transform = 'scale(1.02)';
+                this.parentElement.style.transition = 'transform 0.3s ease';
+            });
+
+            document.querySelector('#nickname-input').addEventListener('blur', function() {
+                this.parentElement.style.transform = 'scale(1)';
+            });
+
+            // 页面加载动画
+            const cards = document.querySelectorAll('.glass-card');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                setTimeout(() => {
+                    card.style.transition = 'all 0.6s ease';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+        });
+    </script>
+</body>
+</html>

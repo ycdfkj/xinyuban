@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>心愈伴 - 隐私设置</title>
+    <script src="https://unpkg.byted-static.com/coze/space_ppt_lib/1.0.3-alpha.12/lib/tailwindcss.js"></script>
+    <script src="https://unpkg.byted-static.com/fortawesome/fontawesome-free/6.7.2/js/all.min.js" data-auto-replace-svg="nest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#6366f1',
+                        secondary: '#8b5cf6',
+                        tertiary: '#06b6d4',
+                        success: '#10b981',
+                        danger: '#ef4444',
+                        warning: '#f59e0b',
+                        info: '#3b82f6',
+                        'glass-bg': 'rgba(255, 255, 255, 0.1)',
+                        'glass-border': 'rgba(255, 255, 255, 0.2)',
+                        'dark-glass': 'rgba(0, 0, 0, 0.1)',
+                    },
+                    backdropBlur: {
+                        'xs': '2px',
+                    },
+                    boxShadow: {
+                        'glass': '0 8px 32px 0 rgba(31, 38, 135, 0.37)',
+                        'glass-inset': 'inset 0 1px 0 0 rgba(255, 255, 255, 0.05)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        }
+        
+        .glass-button {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .glass-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.4);
+        }
+        
+        .danger-button {
+            background: rgba(239, 68, 68, 0.2);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            transition: all 0.3s ease;
+        }
+        
+        .danger-button:hover {
+            background: rgba(239, 68, 68, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px 0 rgba(239, 68, 68, 0.3);
+        }
+        
+        .gradient-text {
+            background: linear-gradient(45deg, #ffffff, #e5e7eb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 28px;
+        }
+        
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: .4s;
+            border-radius: 28px;
+        }
+        
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 4px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        
+        input:checked + .slider {
+            background-color: rgba(16, 185, 129, 0.4);
+            border-color: rgba(16, 185, 129, 0.6);
+        }
+        
+        input:checked + .slider:before {
+            transform: translateX(22px);
+        }
+        
+        .modal-overlay {
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+        }
+        
+        .modal-content {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .floating-animation {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+    </style>
+</head>
+<body class="font-sans text-white overflow-x-hidden">
+    <!-- iOS状态栏 -->
+    <div id="status-bar" class="flex justify-between items-center px-6 py-2 text-sm font-medium">
+        <div class="flex items-center space-x-1">
+            <span>9:41</span>
+        </div>
+        <div class="flex items-center space-x-1">
+            <i class="fas fa-signal text-xs"></i>
+            <i class="fas fa-wifi text-xs"></i>
+            <div class="w-6 h-3 border border-white rounded-sm">
+                <div class="w-4 h-1.5 bg-white rounded-sm m-0.5"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 主要内容区域 -->
+    <div id="main-content" class="px-4 pb-8">
+        <!-- 顶部导航栏 -->
+        <header id="top-nav" class="flex items-center py-4 mb-6">
+            <button id="back-btn" class="p-2 glass-button rounded-full mr-4 hover:scale-105 transition-transform">
+                <i class="fas fa-arrow-left text-lg"></i>
+            </button>
+            <h1 id="page-title" class="text-xl font-semibold gradient-text">隐私设置</h1>
+        </header>
+
+        <!-- 隐私政策入口 -->
+        <section id="privacy-policy-section" class="mb-6">
+            <div id="privacy-policy-card" class="glass-card rounded-2xl p-4 flex items-center justify-between cursor-pointer hover:scale-105 transition-transform">
+                <div class="flex items-center space-x-4">
+                    <div class="w-12 h-12 bg-gradient-to-br from-blue-400 to-blue-600 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-file-contract text-xl text-white"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold">隐私政策</h3>
+                        <p class="text-sm text-white/70">查看我们的隐私保护政策</p>
+                    </div>
+                </div>
+                <i class="fas fa-chevron-right text-white/50"></i>
+            </div>
+        </section>
+
+        <!-- 数据授权管理 -->
+        <section id="data-permissions-section" class="mb-6">
+            <h2 id="permissions-title" class="text-lg font-semibold mb-4 gradient-text">数据授权管理</h2>
+            <div id="permissions-list" class="space-y-3">
+                <div id="permission-1" class="glass-card rounded-xl p-4 flex items-center justify-between">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-10 h-10 bg-gradient-to-br from-green-400 to-green-600 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-database text-white"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-medium">长期记忆存储</h3>
+                            <p class="text-sm text-white/70">允许智能体学习您的偏好和习惯</p>
+                        </div>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" id="memory-permission" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                
+                <div id="permission-2" class="glass-card rounded-xl p-4 flex items-center justify-between">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-10 h-10 bg-gradient-to-br from-purple-400 to-purple-600 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-chart-line text-white"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-medium">数据分析优化</h3>
+                            <p class="text-sm text-white/70">用于改进服务质量和个性化推荐</p>
+                        </div>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" id="analytics-permission" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                
+                <div id="permission-3" class="glass-card rounded-xl p-4 flex items-center justify-between">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-10 h-10 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-bell text-white"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-medium">消息通知</h3>
+                            <p class="text-sm text-white/70">接收重要提醒和个性化建议</p>
+                        </div>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" id="notification-permission" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                
+                <div id="permission-4" class="glass-card rounded-xl p-4 flex items-center justify-between">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-10 h-10 bg-gradient-to-br from-indigo-400 to-indigo-600 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-microphone text-white"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-medium">语音功能</h3>
+                            <p class="text-sm text-white/70">允许使用语音输入和合成功能</p>
+                        </div>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" id="voice-permission">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+        </section>
+
+        <!-- 数据删除申请 -->
+        <section id="data-deletion-section" class="mb-6">
+            <h2 id="deletion-title" class="text-lg font-semibold mb-4 gradient-text">数据管理</h2>
+            <div id="deletion-card" class="glass-card rounded-2xl p-4">
+                <div class="flex items-center space-x-4 mb-4">
+                    <div class="w-12 h-12 bg-gradient-to-br from-red-400 to-red-600 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-trash-alt text-xl text-white"></i>
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="font-semibold">申请删除我的数据</h3>
+                        <p class="text-sm text-white/70">永久删除您的所有个人数据和使用记录</p>
+                    </div>
+                </div>
+                <p class="text-sm text-white/70 mb-4">
+                    请注意：数据删除后将无法恢复，包括您的聊天记录、情绪记录、测评历史等所有个人信息。我们将在7个工作日内处理您的申请。
+                </p>
+                <button id="delete-data-btn" class="w-full py-3 danger-button rounded-xl font-medium text-white hover:scale-105 transition-transform">
+                    <i class="fas fa-exclamation-triangle mr-2"></i>
+                    申请删除我的数据
+                </button>
+            </div>
+        </section>
+
+        <!-- 安全提示 -->
+        <section id="security-tips" class="mb-6">
+            <div id="security-card" class="glass-card rounded-2xl p-4 floating-animation">
+                <div class="flex items-start space-x-3">
+                    <div class="w-8 h-8 bg-gradient-to-br from-blue-400 to-blue-600 rounded-lg flex items-center justify-center mt-1">
+                        <i class="fas fa-shield-alt text-sm text-white"></i>
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="font-semibold mb-2">安全保护</h3>
+                        <p class="text-sm text-white/70 leading-relaxed">
+                            您的所有数据都经过端到端加密存储，我们严格遵守隐私保护法规，确保您的个人信息安全。您可以随时修改这些设置来控制数据的使用方式。
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- 删除确认弹窗 -->
+    <div id="delete-modal" class="fixed inset-0 modal-overlay flex items-center justify-center px-4 z-50 hidden">
+        <div id="modal-content" class="modal-content rounded-3xl p-6 w-full max-w-sm">
+            <div class="text-center">
+                <div class="w-16 h-16 bg-gradient-to-br from-red-400 to-red-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-exclamation-triangle text-2xl text-white"></i>
+                </div>
+                <h3 class="text-lg font-semibold mb-2">确认删除数据</h3>
+                <p class="text-sm text-white/70 mb-6">
+                    此操作将永久删除您的所有个人数据，包括聊天记录、情绪记录、测评历史等，且无法恢复。您确定要继续吗？
+                </p>
+                <div class="flex space-x-3">
+                    <button id="cancel-delete-btn" class="flex-1 py-3 glass-button rounded-xl font-medium text-white">
+                        取消
+                    </button>
+                    <button id="confirm-delete-btn" class="flex-1 py-3 danger-button rounded-xl font-medium text-white">
+                        确认删除
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 成功提示弹窗 -->
+    <div id="success-modal" class="fixed inset-0 modal-overlay flex items-center justify-center px-4 z-50 hidden">
+        <div id="success-modal-content" class="modal-content rounded-3xl p-6 w-full max-w-sm">
+            <div class="text-center">
+                <div class="w-16 h-16 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-check text-2xl text-white"></i>
+                </div>
+                <h3 class="text-lg font-semibold mb-2">申请提交成功</h3>
+                <p class="text-sm text-white/70 mb-6">
+                    我们已收到您的数据删除申请，将在7个工作日内处理完成。您将收到处理结果的通知。
+                </p>
+                <button id="close-success-btn" class="w-full py-3 glass-button rounded-xl font-medium text-white">
+                    确定
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 返回按钮点击事件
+            document.querySelector('#back-btn').addEventListener('click', function() {
+                window.location.href = 'P-PERSONAL_CENTER.html';
+            });
+
+            // 隐私政策点击事件
+            document.querySelector('#privacy-policy-card').addEventListener('click', function() {
+                // 这里可以跳转到隐私政策详情页，暂时用alert代替
+                alert('隐私政策页面（实际项目中应跳转到具体页面）');
+            });
+
+            // 权限开关切换事件
+            const switches = document.querySelectorAll('input[type="checkbox"]');
+            switches.forEach(switchElement => {
+                switchElement.addEventListener('change', function() {
+                    const permissionName = this.id.replace('-permission', '');
+                    const isEnabled = this.checked;
+                    console.log(`${permissionName} 权限已${isEnabled ? '开启' : '关闭'}`);
+                    
+                    // 显示反馈提示
+                    showToast(`${permissionName === 'memory' ? '长期记忆存储' : 
+                             permissionName === 'analytics' ? '数据分析优化' : 
+                             permissionName === 'notification' ? '消息通知' : '语音功能'}已${isEnabled ? '开启' : '关闭'}`);
+                });
+            });
+
+            // 申请删除数据按钮点击事件
+            document.querySelector('#delete-data-btn').addEventListener('click', function() {
+                document.querySelector('#delete-modal').classList.remove('hidden');
+            });
+
+            // 取消删除按钮点击事件
+            document.querySelector('#cancel-delete-btn').addEventListener('click', function() {
+                document.querySelector('#delete-modal').classList.add('hidden');
+            });
+
+            // 确认删除按钮点击事件
+            document.querySelector('#confirm-delete-btn').addEventListener('click', function() {
+                document.querySelector('#delete-modal').classList.add('hidden');
+                document.querySelector('#success-modal').classList.remove('hidden');
+            });
+
+            // 关闭成功弹窗按钮点击事件
+            document.querySelector('#close-success-btn').addEventListener('click', function() {
+                document.querySelector('#success-modal').classList.add('hidden');
+                // 实际项目中可能需要跳转到登录页或其他页面
+                // window.location.href = 'P-REGISTER_LOGIN.html';
+            });
+
+            // 点击弹窗背景关闭弹窗
+            document.querySelector('#delete-modal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.classList.add('hidden');
+                }
+            });
+
+            document.querySelector('#success-modal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.classList.add('hidden');
+                }
+            });
+
+            // 显示提示消息的函数
+            function showToast(message) {
+                // 创建提示元素
+                const toast = document.createElement('div');
+                toast.className = 'fixed top-20 left-1/2 transform -translate-x-1/2 glass-card rounded-lg px-4 py-2 text-sm z-50';
+                toast.textContent = message;
+                
+                document.body.appendChild(toast);
+                
+                // 3秒后自动移除
+                setTimeout(() => {
+                    if (toast.parentNode) {
+                        toast.parentNode.removeChild(toast);
+                    }
+                }, 3000);
+            }
+
+            // 添加页面加载动画
+            const cards = document.querySelectorAll('.glass-card');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                setTimeout(() => {
+                    card.style.transition = 'all 0.6s ease';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+        });
+    </script>
+</body>
+</html>

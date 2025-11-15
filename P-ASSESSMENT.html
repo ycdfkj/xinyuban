@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>心愈伴 - 心理测评</title>
+    <script src="https://unpkg.byted-static.com/coze/space_ppt_lib/1.0.3-alpha.12/lib/tailwindcss.js"></script>
+    <script src="https://unpkg.byted-static.com/fortawesome/fontawesome-free/6.7.2/js/all.min.js" data-auto-replace-svg="nest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#6366f1',
+                        secondary: '#8b5cf6',
+                        tertiary: '#06b6d4',
+                        success: '#10b981',
+                        danger: '#ef4444',
+                        warning: '#f59e0b',
+                        info: '#3b82f6',
+                        'glass-bg': 'rgba(255, 255, 255, 0.1)',
+                        'glass-border': 'rgba(255, 255, 255, 0.2)',
+                        'dark-glass': 'rgba(0, 0, 0, 0.1)',
+                    },
+                    backdropBlur: {
+                        'xs': '2px',
+                    },
+                    boxShadow: {
+                        'glass': '0 8px 32px 0 rgba(31, 38, 135, 0.37)',
+                        'glass-inset': 'inset 0 1px 0 0 rgba(255, 255, 255, 0.05)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        }
+        
+        .glass-button {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .glass-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.4);
+        }
+        
+        .gradient-text {
+            background: linear-gradient(45deg, #ffffff, #e5e7eb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .floating-animation {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .scale-card {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .scale-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 16px 48px 0 rgba(31, 38, 135, 0.4);
+        }
+        
+        .loading-spinner {
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top: 2px solid #ffffff;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="font-sans text-white overflow-x-hidden">
+    <!-- iOS状态栏 -->
+    <div id="status-bar" class="flex justify-between items-center px-6 py-2 text-sm font-medium">
+        <div class="flex items-center space-x-1">
+            <span>9:41</span>
+        </div>
+        <div class="flex items-center space-x-1">
+            <i class="fas fa-signal text-xs"></i>
+            <i class="fas fa-wifi text-xs"></i>
+            <div class="w-6 h-3 border border-white rounded-sm">
+                <div class="w-4 h-1.5 bg-white rounded-sm m-0.5"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 主要内容区域 -->
+    <div id="main-content" class="px-4 pb-8">
+        <!-- 顶部导航栏 -->
+        <header id="top-nav" class="flex items-center py-4 mb-6">
+            <button id="back-btn" class="p-2 glass-button rounded-full mr-4">
+                <i class="fas fa-arrow-left text-lg"></i>
+            </button>
+            <h1 id="page-title" class="text-xl font-bold gradient-text">心理测评</h1>
+        </header>
+
+        <!-- 页面介绍 -->
+        <section id="intro-section" class="glass-card rounded-3xl p-6 mb-6 floating-animation">
+            <div class="text-center">
+                <div class="w-20 h-20 mx-auto mb-4 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center">
+                    <i class="fas fa-chart-line text-3xl text-white"></i>
+                </div>
+                <h2 id="intro-title" class="text-lg font-semibold mb-2 gradient-text">科学了解自己</h2>
+                <p id="intro-description" class="text-sm text-white/70">
+                    通过专业的心理量表，深入了解自己的心理状态，获得个性化的分析和建议
+                </p>
+            </div>
+        </section>
+
+        <!-- 测评量表列表 -->
+        <section id="scale-list-section" class="mb-6">
+            <h2 id="scale-list-title" class="text-lg font-semibold mb-4 gradient-text">选择测评量表</h2>
+            
+            <!-- 加载状态 -->
+            <div id="loading-indicator" class="hidden text-center py-8">
+                <div class="loading-spinner mx-auto mb-2"></div>
+                <p class="text-sm text-white/70">加载中...</p>
+            </div>
+            
+            <!-- 量表列表 -->
+            <div id="scale-list" class="space-y-4">
+                <!-- 抑郁自评量表 -->
+                <div id="scale-depression" class="glass-card rounded-2xl p-4 scale-card" data-scale-id="depression">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-16 h-16 bg-gradient-to-br from-blue-400 to-blue-600 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-heart text-2xl text-white"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="font-semibold mb-1">抑郁自评量表</h3>
+                            <p class="text-sm text-white/70 mb-2">评估抑郁症状的严重程度</p>
+                            <div class="flex items-center space-x-4 text-xs text-white/60">
+                                <span><i class="fas fa-clock mr-1"></i>约8分钟</span>
+                                <span><i class="fas fa-clipboard-list mr-1"></i>20题</span>
+                            </div>
+                        </div>
+                        <i class="fas fa-chevron-right text-white/50"></i>
+                    </div>
+                </div>
+
+                <!-- 焦虑自评量表 -->
+                <div id="scale-anxiety" class="glass-card rounded-2xl p-4 scale-card" data-scale-id="anxiety">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-16 h-16 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-bolt text-2xl text-white"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="font-semibold mb-1">焦虑自评量表</h3>
+                            <p class="text-sm text-white/70 mb-2">评估焦虑症状的严重程度</p>
+                            <div class="flex items-center space-x-4 text-xs text-white/60">
+                                <span><i class="fas fa-clock mr-1"></i>约6分钟</span>
+                                <span><i class="fas fa-clipboard-list mr-1"></i>20题</span>
+                            </div>
+                        </div>
+                        <i class="fas fa-chevron-right text-white/50"></i>
+                    </div>
+                </div>
+
+                <!-- 睡眠质量量表 -->
+                <div id="scale-sleep" class="glass-card rounded-2xl p-4 scale-card" data-scale-id="sleep">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-16 h-16 bg-gradient-to-br from-indigo-400 to-purple-500 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-moon text-2xl text-white"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="font-semibold mb-1">睡眠质量量表</h3>
+                            <p class="text-sm text-white/70 mb-2">评估睡眠质量和睡眠障碍</p>
+                            <div class="flex items-center space-x-4 text-xs text-white/60">
+                                <span><i class="fas fa-clock mr-1"></i>约5分钟</span>
+                                <span><i class="fas fa-clipboard-list mr-1"></i>19题</span>
+                            </div>
+                        </div>
+                        <i class="fas fa-chevron-right text-white/50"></i>
+                    </div>
+                </div>
+
+                <!-- 人际关系量表 -->
+                <div id="scale-relationship" class="glass-card rounded-2xl p-4 scale-card" data-scale-id="relationship">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-16 h-16 bg-gradient-to-br from-pink-400 to-pink-600 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-users text-2xl text-white"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="font-semibold mb-1">人际关系量表</h3>
+                            <p class="text-sm text-white/70 mb-2">评估人际交往能力和关系质量</p>
+                            <div class="flex items-center space-x-4 text-xs text-white/60">
+                                <span><i class="fas fa-clock mr-1"></i>约10分钟</span>
+                                <span><i class="fas fa-clipboard-list mr-1"></i>25题</span>
+                            </div>
+                        </div>
+                        <i class="fas fa-chevron-right text-white/50"></i>
+                    </div>
+                </div>
+
+                <!-- 职业倦怠量表 -->
+                <div id="scale-burnout" class="glass-card rounded-2xl p-4 scale-card" data-scale-id="burnout">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-16 h-16 bg-gradient-to-br from-red-400 to-red-600 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-fire text-2xl text-white"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="font-semibold mb-1">职业倦怠量表</h3>
+                            <p class="text-sm text-white/70 mb-2">评估工作压力和职业倦怠程度</p>
+                            <div class="flex items-center space-x-4 text-xs text-white/60">
+                                <span><i class="fas fa-clock mr-1"></i>约7分钟</span>
+                                <span><i class="fas fa-clipboard-list mr-1"></i>22题</span>
+                            </div>
+                        </div>
+                        <i class="fas fa-chevron-right text-white/50"></i>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 我的测评历史入口 -->
+        <section id="history-section" class="mb-6">
+            <button id="history-btn" class="w-full glass-button rounded-2xl p-4 flex items-center justify-between group">
+                <div class="flex items-center space-x-4">
+                    <div class="w-12 h-12 bg-gradient-to-br from-green-400 to-green-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <i class="fas fa-history text-xl text-white"></i>
+                    </div>
+                    <div class="text-left">
+                        <h3 class="font-semibold mb-1">我的测评历史</h3>
+                        <p class="text-sm text-white/70">查看过往测评记录和结果分析</p>
+                    </div>
+                </div>
+                <i class="fas fa-chevron-right text-white/50 group-hover:text-white transition-colors"></i>
+            </button>
+        </section>
+
+        <!-- 测评说明 -->
+        <section id="instruction-section" class="glass-card rounded-2xl p-4">
+            <div class="flex items-start space-x-3">
+                <div class="w-8 h-8 bg-gradient-to-br from-blue-400 to-blue-600 rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
+                    <i class="fas fa-info text-sm text-white"></i>
+                </div>
+                <div>
+                    <h3 class="font-semibold mb-2 gradient-text">测评说明</h3>
+                    <ul class="text-sm text-white/70 space-y-1">
+                        <li>• 测评结果仅供参考，不能替代专业医疗诊断</li>
+                        <li>• 请根据实际情况如实作答，以获得准确结果</li>
+                        <li>• 测评过程中如有不适，请及时停止并寻求专业帮助</li>
+                        <li>• 所有测评数据均严格保密，仅用于为您提供更好的服务</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 返回按钮点击事件
+            document.querySelector('#back-btn').addEventListener('click', function() {
+                window.location.href = 'P-HOME.html';
+            });
+
+            // 测评历史按钮点击事件
+            document.querySelector('#history-btn').addEventListener('click', function() {
+                window.location.href = 'P-ASSESSMENT_RESULT.html?mode=history';
+            });
+
+            // 量表列表项点击事件
+            const scaleCards = document.querySelectorAll('.scale-card');
+            scaleCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    const scaleId = this.dataset.scaleId;
+                    // 显示加载状态
+                    showLoading();
+                    
+                    // 模拟加载延迟
+                    setTimeout(() => {
+                        hideLoading();
+                        // 跳转到测评题目页，传递量表ID
+                        window.location.href = `P-ASSESSMENT_QUESTIONS.html?scaleId=${scaleId}`;
+                    }, 500);
+                });
+            });
+
+            // 显示加载状态
+            function showLoading() {
+                const loadingIndicator = document.querySelector('#loading-indicator');
+                const scaleList = document.querySelector('#scale-list');
+                
+                loadingIndicator.classList.remove('hidden');
+                scaleList.style.opacity = '0.5';
+                scaleList.style.pointerEvents = 'none';
+            }
+
+            // 隐藏加载状态
+            function hideLoading() {
+                const loadingIndicator = document.querySelector('#loading-indicator');
+                const scaleList = document.querySelector('#scale-list');
+                
+                loadingIndicator.classList.add('hidden');
+                scaleList.style.opacity = '1';
+                scaleList.style.pointerEvents = 'auto';
+            }
+
+            // 添加页面加载动画
+            const cards = document.querySelectorAll('.glass-card');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                setTimeout(() => {
+                    card.style.transition = 'all 0.6s ease';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>心愈伴 - 心理咨询</title>
+    <script src="https://unpkg.byted-static.com/coze/space_ppt_lib/1.0.3-alpha.12/lib/tailwindcss.js"></script>
+    <script src="https://unpkg.byted-static.com/fortawesome/fontawesome-free/6.7.2/js/all.min.js" data-auto-replace-svg="nest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#6366f1',
+                        secondary: '#8b5cf6',
+                        tertiary: '#06b6d4',
+                        success: '#10b981',
+                        danger: '#ef4444',
+                        warning: '#f59e0b',
+                        info: '#3b82f6',
+                        'glass-bg': 'rgba(255, 255, 255, 0.1)',
+                        'glass-border': 'rgba(255, 255, 255, 0.2)',
+                        'dark-glass': 'rgba(0, 0, 0, 0.1)',
+                    },
+                    backdropBlur: {
+                        'xs': '2px',
+                    },
+                    boxShadow: {
+                        'glass': '0 8px 32px 0 rgba(31, 38, 135, 0.37)',
+                        'glass-inset': 'inset 0 1px 0 0 rgba(255, 255, 255, 0.05)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        }
+        
+        .glass-nav {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .glass-input {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .glass-button {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .glass-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.4);
+        }
+        
+        .gradient-text {
+            background: linear-gradient(45deg, #ffffff, #e5e7eb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .user-message {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            border-radius: 18px 18px 4px 18px;
+        }
+        
+        .ai-message {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 18px 18px 18px 4px;
+        }
+        
+        .typing-indicator {
+            animation: typing 1.5s infinite;
+        }
+        
+        @keyframes typing {
+            0%, 60%, 100% { opacity: 0.3; }
+            30% { opacity: 1; }
+        }
+        
+        .theme-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .theme-card:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px 0 rgba(31, 38, 135, 0.4);
+        }
+        
+        .recording-animation {
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.7; }
+        }
+    </style>
+</head>
+<body class="font-sans text-white overflow-x-hidden">
+    <!-- iOS状态栏 -->
+    <div id="status-bar" class="flex justify-between items-center px-6 py-2 text-sm font-medium">
+        <div class="flex items-center space-x-1">
+            <span>9:41</span>
+        </div>
+        <div class="flex items-center space-x-1">
+            <i class="fas fa-signal text-xs"></i>
+            <i class="fas fa-wifi text-xs"></i>
+            <div class="w-6 h-3 border border-white rounded-sm">
+                <div class="w-4 h-1.5 bg-white rounded-sm m-0.5"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 顶部导航栏 -->
+    <header id="top-nav" class="glass-nav flex justify-between items-center px-4 py-3">
+        <button id="back-btn" class="p-2 glass-button rounded-full">
+            <i class="fas fa-arrow-left text-lg"></i>
+        </button>
+        <h1 id="page-title" class="text-lg font-semibold gradient-text">心理咨询</h1>
+        <button id="history-btn" class="p-2 glass-button rounded-full">
+            <i class="fas fa-history text-lg"></i>
+        </button>
+    </header>
+
+    <!-- 主要内容区域 -->
+    <div id="main-content" class="flex flex-col h-screen pb-20">
+        <!-- 咨询主题选择区 -->
+        <div id="theme-selection" class="px-4 py-6 space-y-4">
+            <div class="text-center mb-6">
+                <h2 class="text-xl font-bold gradient-text mb-2">选择咨询主题</h2>
+                <p class="text-white/70">选择一个主题，让我更好地帮助你</p>
+            </div>
+            
+            <div id="theme-list" class="space-y-3">
+                <button id="theme-emotion" class="theme-card w-full p-4 rounded-2xl text-left" data-theme="情绪管理">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-heart text-lg text-white"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="font-semibold">情绪管理</h3>
+                            <p class="text-sm text-white/70">焦虑、抑郁、压力等情绪问题</p>
+                        </div>
+                    </div>
+                </button>
+                
+                <button id="theme-relationship" class="theme-card w-full p-4 rounded-2xl text-left" data-theme="人际关系">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 bg-gradient-to-br from-green-400 to-green-600 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-users text-lg text-white"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="font-semibold">人际关系</h3>
+                            <p class="text-sm text-white/70">朋友、同事、家庭关系</p>
+                        </div>
+                    </div>
+                </button>
+                
+                <button id="theme-love" class="theme-card w-full p-4 rounded-2xl text-left" data-theme="恋爱心理">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 bg-gradient-to-br from-pink-400 to-pink-600 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-heart text-lg text-white"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="font-semibold">恋爱心理</h3>
+                            <p class="text-sm text-white/70">恋爱困惑、情感问题</p>
+                        </div>
+                    </div>
+                </button>
+                
+                <button id="theme-career" class="theme-card w-full p-4 rounded-2xl text-left" data-theme="职业发展">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 bg-gradient-to-br from-blue-400 to-blue-600 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-briefcase text-lg text-white"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="font-semibold">职业发展</h3>
+                            <p class="text-sm text-white/70">工作压力、职业规划</p>
+                        </div>
+                    </div>
+                </button>
+                
+                <button id="theme-sleep" class="theme-card w-full p-4 rounded-2xl text-left" data-theme="睡眠障碍">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 bg-gradient-to-br from-indigo-400 to-purple-500 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-moon text-lg text-white"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="font-semibold">睡眠障碍</h3>
+                            <p class="text-sm text-white/70">失眠、睡眠质量问题</p>
+                        </div>
+                    </div>
+                </button>
+                
+                <button id="theme-other" class="theme-card w-full p-4 rounded-2xl text-left" data-theme="其他">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 bg-gradient-to-br from-gray-400 to-gray-600 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-ellipsis-h text-lg text-white"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="font-semibold">其他</h3>
+                            <p class="text-sm text-white/70">其他心理问题</p>
+                        </div>
+                    </div>
+                </button>
+            </div>
+        </div>
+
+        <!-- 聊天区域 -->
+        <div id="chat-area" class="flex-1 flex flex-col hidden">
+            <!-- 聊天记录区 -->
+            <div id="chat-messages" class="flex-1 px-4 py-4 space-y-4 overflow-y-auto">
+                <!-- AI欢迎消息 -->
+                <div id="welcome-message" class="flex items-start space-x-3">
+                    <div class="w-8 h-8 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-robot text-sm text-white"></i>
+                    </div>
+                    <div class="ai-message max-w-xs md:max-w-sm p-3">
+                        <p class="text-sm">你好！我是你的心理咨询师。我会认真倾听你的问题，并为你提供专业的心理支持。请告诉我你最近遇到了什么困扰？</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 正在输入指示器 -->
+            <div id="typing-indicator" class="px-4 py-2 hidden">
+                <div class="flex items-start space-x-3">
+                    <div class="w-8 h-8 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-robot text-sm text-white"></i>
+                    </div>
+                    <div class="ai-message p-3">
+                        <div class="flex space-x-1">
+                            <div class="w-2 h-2 bg-white/60 rounded-full typing-indicator"></div>
+                            <div class="w-2 h-2 bg-white/60 rounded-full typing-indicator" style="animation-delay: 0.2s;"></div>
+                            <div class="w-2 h-2 bg-white/60 rounded-full typing-indicator" style="animation-delay: 0.4s;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 底部输入区域 -->
+        <div id="input-area" class="glass-card mx-4 mb-4 rounded-2xl p-4 hidden">
+            <div class="flex items-end space-x-3">
+                <!-- 表情按钮 -->
+                <button id="emoji-btn" class="p-2 glass-button rounded-full">
+                    <i class="fas fa-smile text-lg"></i>
+                </button>
+                
+                <!-- 语音按钮 -->
+                <button id="voice-btn" class="p-2 glass-button rounded-full">
+                    <i class="fas fa-microphone text-lg"></i>
+                </button>
+                
+                <!-- 输入框 -->
+                <div class="flex-1 relative">
+                    <input type="text" id="message-input" placeholder="输入你的想法..." 
+                           class="glass-input w-full px-4 py-3 rounded-xl text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-white/30">
+                </div>
+                
+                <!-- 发送按钮 -->
+                <button id="send-btn" class="p-3 glass-button rounded-full">
+                    <i class="fas fa-paper-plane text-lg"></i>
+                </button>
+            </div>
+            
+            <!-- 录音状态显示 -->
+            <div id="recording-status" class="mt-3 text-center hidden">
+                <div class="w-8 h-8 bg-danger rounded-full mx-auto mb-2 recording-animation flex items-center justify-center">
+                    <i class="fas fa-microphone text-sm text-white"></i>
+                </div>
+                <p class="text-sm text-white/70">正在录音... 点击停止</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 结束咨询按钮 -->
+    <button id="end-counseling-btn" class="fixed bottom-24 right-4 w-14 h-14 bg-danger rounded-full flex items-center justify-center shadow-lg hidden">
+        <i class="fas fa-stop text-xl text-white"></i>
+    </button>
+
+    <!-- 底部导航栏 -->
+    <nav id="bottom-nav" class="fixed bottom-0 left-0 right-0 glass-nav flex justify-around items-center h-16 px-2 z-40">
+        <a id="nav-home" href="P-HOME.html" class="flex flex-col items-center p-2 text-white/60 hover:text-white transition-colors">
+            <i class="fas fa-home text-xl mb-1"></i>
+            <span class="text-xs">首页</span>
+        </a>
+        <a id="nav-counseling" href="#" class="flex flex-col items-center p-2 text-white">
+            <i class="fas fa-user-md text-xl mb-1"></i>
+            <span class="text-xs">咨询</span>
+        </a>
+        <a id="nav-companionship" href="P-COMPANIONSHIP.html" class="flex flex-col items-center p-2 text-white/60 hover:text-white transition-colors">
+            <i class="fas fa-heart text-xl mb-1"></i>
+            <span class="text-xs">陪伴</span>
+        </a>
+        <a id="nav-profile" href="P-PERSONAL_CENTER.html" class="flex flex-col items-center p-2 text-white/60 hover:text-white transition-colors">
+            <i class="fas fa-user text-xl mb-1"></i>
+            <span class="text-xs">我的</span>
+        </a>
+    </nav>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            let selectedTheme = null;
+            let isRecording = false;
+            let conversationId = null;
+
+            // 解析URL参数的辅助函数
+            function getUrlParams() {
+                const params = {};
+                const queryString = window.location.search.substring(1);
+                const urlParams = new URLSearchParams(queryString);
+                
+                for(const [key, value] of urlParams.entries()) {
+                    params[key] = value;
+                }
+                return params;
+            }
+
+            // 检查是否有预设主题
+            const params = getUrlParams();
+            if(params.theme_id) {
+                // 根据主题ID选择对应的主题
+                const themeMap = {
+                    '恋爱心理': 'theme-love',
+                    '职业发展焦虑': 'theme-career'
+                };
+                const themeId = themeMap[params.theme_id];
+                if(themeId) {
+                    document.querySelector(`#${themeId}`).click();
+                }
+            }
+
+            // 返回按钮点击事件
+            document.querySelector('#back-btn').addEventListener('click', function() {
+                if(selectedTheme) {
+                    // 如果正在咨询中，显示确认弹窗
+                    if(confirm('确定要结束当前咨询吗？')) {
+                        window.location.href = 'P-HOME.html';
+                    }
+                } else {
+                    window.location.href = 'P-HOME.html';
+                }
+            });
+
+            // 历史记录按钮点击事件
+            document.querySelector('#history-btn').addEventListener('click', function() {
+                window.location.href = 'P-HISTORY.html';
+            });
+
+            // 主题选择事件
+            document.querySelectorAll('.theme-card').forEach(card => {
+                card.addEventListener('click', function() {
+                    selectedTheme = this.dataset.theme;
+                    startCounseling(selectedTheme);
+                });
+            });
+
+            // 开始咨询
+            function startCounseling(theme) {
+                // 隐藏主题选择区，显示聊天区域
+                document.querySelector('#theme-selection').classList.add('hidden');
+                document.querySelector('#chat-area').classList.remove('hidden');
+                document.querySelector('#input-area').classList.remove('hidden');
+                document.querySelector('#end-counseling-btn').classList.remove('hidden');
+
+                // 更新页面标题
+                document.querySelector('#page-title').textContent = `心理咨询 - ${theme}`;
+
+                // 生成对话ID
+                conversationId = 'conv_' + Date.now();
+
+                // 显示AI欢迎消息
+                showAIMessage(`你好！我是你的心理咨询师。我了解到你想咨询关于${theme}的问题。请告诉我你最近遇到了什么困扰，我会认真倾听并为你提供帮助。`);
+            }
+
+            // 发送消息
+            function sendMessage() {
+                const input = document.querySelector('#message-input');
+                const message = input.value.trim();
+                
+                if(message) {
+                    showUserMessage(message);
+                    input.value = '';
+                    processAIResponse(message);
+                }
+            }
+
+            // 显示用户消息
+            function showUserMessage(message) {
+                const chatMessages = document.querySelector('#chat-messages');
+                const messageDiv = document.createElement('div');
+                messageDiv.className = 'flex justify-end';
+                messageDiv.innerHTML = `
+                    <div class="user-message max-w-xs md:max-w-sm p-3">
+                        <p class="text-sm">${message}</p>
+                    </div>
+                `;
+                chatMessages.appendChild(messageDiv);
+                scrollToBottom();
+            }
+
+            // 显示AI消息
+            function showAIMessage(message) {
+                const chatMessages = document.querySelector('#chat-messages');
+                const messageDiv = document.createElement('div');
+                messageDiv.className = 'flex items-start space-x-3';
+                messageDiv.innerHTML = `
+                    <div class="w-8 h-8 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-robot text-sm text-white"></i>
+                    </div>
+                    <div class="ai-message max-w-xs md:max-w-sm p-3">
+                        <p class="text-sm">${message}</p>
+                    </div>
+                `;
+                chatMessages.appendChild(messageDiv);
+                scrollToBottom();
+            }
+
+            // 处理AI响应
+            function processAIResponse(userMessage) {
+                // 显示正在输入指示器
+                document.querySelector('#typing-indicator').classList.remove('hidden');
+                scrollToBottom();
+
+                // 模拟AI思考时间
+                setTimeout(() => {
+                    document.querySelector('#typing-indicator').classList.add('hidden');
+                    
+                    // 简单的AI响应逻辑（实际应用中会调用AI API）
+                    let aiResponse = '';
+                    
+                    if(userMessage.includes('焦虑') || userMessage.includes('压力')) {
+                        aiResponse = '我理解你现在的感受。焦虑和压力是很常见的情绪反应。让我们一起分析一下是什么导致了这些感受，然后找到一些应对的方法。你愿意和我分享更多细节吗？';
+                    } else if(userMessage.includes('难过') || userMessage.includes('伤心')) {
+                        aiResponse = '听到你这么说，我感到很难过。允许自己感受这些情绪是很重要的。你愿意告诉我是什么事情让你感到难过吗？有时候说出来会感觉好一些。';
+                    } else if(userMessage.includes('朋友') || userMessage.includes('关系')) {
+                        aiResponse = '人际关系确实是我们生活中很重要的一部分。每段关系都会有挑战，这是正常的。让我们一起看看如何改善这种情况。';
+                    } else {
+                        aiResponse = '谢谢你和我分享这些。我在认真听。你愿意告诉我更多关于这个情况的细节吗？这样我可以更好地理解并帮助你。';
+                    }
+                    
+                    showAIMessage(aiResponse);
+                }, 1500 + Math.random() * 1000);
+            }
+
+            // 滚动到底部
+            function scrollToBottom() {
+                const chatMessages = document.querySelector('#chat-messages');
+                setTimeout(() => {
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                }, 100);
+            }
+
+            // 发送按钮点击事件
+            document.querySelector('#send-btn').addEventListener('click', sendMessage);
+
+            // 输入框回车事件
+            document.querySelector('#message-input').addEventListener('keypress', function(e) {
+                if(e.key === 'Enter') {
+                    sendMessage();
+                }
+            });
+
+            // 语音按钮点击事件
+            document.querySelector('#voice-btn').addEventListener('click', function() {
+                if(!isRecording) {
+                    startRecording();
+                } else {
+                    stopRecording();
+                }
+            });
+
+            // 开始录音
+            function startRecording() {
+                console.log('需要调用第三方接口实现语音录音功能');
+                isRecording = true;
+                document.querySelector('#voice-btn').innerHTML = '<i class="fas fa-stop text-lg"></i>';
+                document.querySelector('#voice-btn').classList.add('bg-danger');
+                document.querySelector('#recording-status').classList.remove('hidden');
+            }
+
+            // 停止录音
+            function stopRecording() {
+                console.log('停止语音录音并处理音频数据');
+                isRecording = false;
+                document.querySelector('#voice-btn').innerHTML = '<i class="fas fa-microphone text-lg"></i>';
+                document.querySelector('#voice-btn').classList.remove('bg-danger');
+                document.querySelector('#recording-status').classList.add('hidden');
+                
+                // 模拟语音识别结果
+                setTimeout(() => {
+                    const voiceText = '我今天感觉压力很大，工作上的事情让我很焦虑。';
+                    showUserMessage(voiceText);
+                    processAIResponse(voiceText);
+                }, 500);
+            }
+
+            // 表情按钮点击事件
+            document.querySelector('#emoji-btn').addEventListener('click', function() {
+                console.log('需要调用第三方接口实现表情选择功能');
+                // 模拟表情选择
+                const emojis = ['😊', '😢', '😡', '😲', '😍', '🤔'];
+                const randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
+                showUserMessage(randomEmoji);
+                processAIResponse(randomEmoji);
+            });
+
+            // 结束咨询按钮点击事件
+            document.querySelector('#end-counseling-btn').addEventListener('click', function() {
+                if(confirm('确定要结束本次咨询吗？我们会为你生成咨询总结。')) {
+                    // 跳转到咨询建议汇总页
+                    window.location.href = `P-COUNSELING_SUMMARY.html?conversation_id=${conversationId}&theme=${encodeURIComponent(selectedTheme)}`;
+                }
+            });
+
+            // 底部导航栏点击事件
+            document.querySelector('#nav-home').addEventListener('click', function(e) {
+                e.preventDefault();
+                if(selectedTheme) {
+                    if(confirm('确定要结束当前咨询吗？')) {
+                        window.location.href = 'P-HOME.html';
+                    }
+                } else {
+                    window.location.href = 'P-HOME.html';
+                }
+            });
+
+            document.querySelector('#nav-counseling').addEventListener('click', function(e) {
+                e.preventDefault();
+                // 已在咨询页面，无需操作
+            });
+
+            document.querySelector('#nav-companionship').addEventListener('click', function(e) {
+                e.preventDefault();
+                if(selectedTheme) {
+                    if(confirm('确定要结束当前咨询吗？')) {
+                        window.location.href = 'P-COMPANIONSHIP.html';
+                    }
+                } else {
+                    window.location.href = 'P-COMPANIONSHIP.html';
+                }
+            });
+
+            document.querySelector('#nav-profile').addEventListener('click', function(e) {
+                e.preventDefault();
+                if(selectedTheme) {
+                    if(confirm('确定要结束当前咨询吗？')) {
+                        window.location.href = 'P-PERSONAL_CENTER.html';
+                    }
+                } else {
+                    window.location.href = 'P-PERSONAL_CENTER.html';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

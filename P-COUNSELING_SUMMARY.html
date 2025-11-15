@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>心愈伴 - 咨询建议汇总</title>
+    <script src="https://unpkg.byted-static.com/coze/space_ppt_lib/1.0.3-alpha.12/lib/tailwindcss.js"></script>
+    <script src="https://unpkg.byted-static.com/fortawesome/fontawesome-free/6.7.2/js/all.min.js" data-auto-replace-svg="nest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#6366f1',
+                        secondary: '#8b5cf6',
+                        tertiary: '#06b6d4',
+                        success: '#10b981',
+                        danger: '#ef4444',
+                        warning: '#f59e0b',
+                        info: '#3b82f6',
+                        'glass-bg': 'rgba(255, 255, 255, 0.1)',
+                        'glass-border': 'rgba(255, 255, 255, 0.2)',
+                        'dark-glass': 'rgba(0, 0, 0, 0.1)',
+                    },
+                    backdropBlur: {
+                        'xs': '2px',
+                    },
+                    boxShadow: {
+                        'glass': '0 8px 32px 0 rgba(31, 38, 135, 0.37)',
+                        'glass-inset': 'inset 0 1px 0 0 rgba(255, 255, 255, 0.05)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        }
+        
+        .glass-button {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .glass-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.4);
+        }
+        
+        .gradient-text {
+            background: linear-gradient(45deg, #ffffff, #e5e7eb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .floating-animation {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .pulse-animation {
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .star-rating {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .star {
+            font-size: 2rem;
+            color: rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .star:hover,
+        .star.active {
+            color: #fbbf24;
+            transform: scale(1.1);
+        }
+
+        .modal-overlay {
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        }
+    </style>
+</head>
+<body class="font-sans text-white overflow-x-hidden">
+    <!-- iOS状态栏 -->
+    <div id="status-bar" class="flex justify-between items-center px-6 py-2 text-sm font-medium">
+        <div class="flex items-center space-x-1">
+            <span>9:41</span>
+        </div>
+        <div class="flex items-center space-x-1">
+            <i class="fas fa-signal text-xs"></i>
+            <i class="fas fa-wifi text-xs"></i>
+            <div class="w-6 h-3 border border-white rounded-sm">
+                <div class="w-4 h-1.5 bg-white rounded-sm m-0.5"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 主要内容区域 -->
+    <div id="main-content" class="px-4 pb-8">
+        <!-- 顶部导航栏 -->
+        <header id="top-nav" class="flex items-center py-4 mb-6">
+            <button id="back-btn" class="p-2 glass-button rounded-full mr-4 hover:scale-105 transition-transform">
+                <i class="fas fa-arrow-left text-lg"></i>
+            </button>
+            <h1 id="page-title" class="text-xl font-semibold gradient-text">咨询建议汇总</h1>
+        </header>
+
+        <!-- 咨询信息卡片 -->
+        <section id="counseling-info" class="glass-card rounded-3xl p-6 mb-6 floating-animation">
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center space-x-3">
+                    <div class="w-12 h-12 bg-gradient-to-br from-blue-400 to-blue-600 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-user-md text-xl text-white"></i>
+                    </div>
+                    <div>
+                        <h2 id="counseling-theme" class="text-lg font-semibold gradient-text">情绪管理</h2>
+                        <p id="counseling-date" class="text-sm text-white/70">2024年1月15日 14:30</p>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <p class="text-sm text-white/70">咨询时长</p>
+                    <p id="counseling-duration" class="text-lg font-bold gradient-text">25分钟</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 咨询建议内容 -->
+        <section id="counseling-summary" class="glass-card rounded-3xl p-6 mb-6">
+            <h3 class="text-lg font-semibold mb-4 gradient-text">
+                <i class="fas fa-lightbulb text-yellow-400 mr-2"></i>
+                本次咨询核心建议
+            </h3>
+            
+            <div id="summary-content" class="space-y-4">
+                <div class="bg-white/5 rounded-2xl p-4 border border-white/10">
+                    <h4 class="font-semibold mb-2 text-yellow-300">
+                        <i class="fas fa-heart text-yellow-400 mr-2"></i>
+                        情绪识别与接纳
+                    </h4>
+                    <p class="text-sm text-white/80 leading-relaxed">
+                        认识到焦虑是正常的情绪反应，学会观察和接纳自己的情绪变化。当感到焦虑时，可以尝试深呼吸练习，帮助自己平静下来。
+                    </p>
+                </div>
+
+                <div class="bg-white/5 rounded-2xl p-4 border border-white/10">
+                    <h4 class="font-semibold mb-2 text-green-300">
+                        <i class="fas fa-leaf text-green-400 mr-2"></i>
+                        日常调节技巧
+                    </h4>
+                    <p class="text-sm text-white/80 leading-relaxed">
+                        建议每天进行10-15分钟的正念冥想练习，有助于提升情绪调节能力。同时，保持规律的作息和适度的运动也很重要。
+                    </p>
+                </div>
+
+                <div class="bg-white/5 rounded-2xl p-4 border border-white/10">
+                    <h4 class="font-semibold mb-2 text-blue-300">
+                        <i class="fas fa-book text-blue-400 mr-2"></i>
+                        认知调整方法
+                    </h4>
+                    <p class="text-sm text-white/80 leading-relaxed">
+                        学会识别负面思维模式，尝试用更积极、理性的方式看待问题。可以通过写日记的方式记录自己的想法和感受。
+                    </p>
+                </div>
+
+                <div class="bg-white/5 rounded-2xl p-4 border border-white/10">
+                    <h4 class="font-semibold mb-2 text-purple-300">
+                        <i class="fas fa-calendar-check text-purple-400 mr-2"></i>
+                        后续建议
+                    </h4>
+                    <p class="text-sm text-white/80 leading-relaxed">
+                        建议继续保持情绪记录，定期回顾自己的情绪变化。如果焦虑症状持续或加重，建议考虑专业心理咨询师的帮助。
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 评价按钮 -->
+        <section id="rating-section" class="mb-6">
+            <button id="rating-btn" class="w-full glass-button rounded-2xl p-4 text-center group hover:scale-105 transition-transform">
+                <div class="w-12 h-12 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-xl flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform">
+                    <i class="fas fa-star text-xl text-white"></i>
+                </div>
+                <h3 class="font-semibold mb-1">评价本次咨询</h3>
+                <p class="text-sm text-white/70">您的反馈对我们很重要</p>
+            </button>
+        </section>
+
+        <!-- 温馨提示 -->
+        <section id="tips-section" class="glass-card rounded-2xl p-4">
+            <div class="flex items-start space-x-3">
+                <div class="w-8 h-8 bg-gradient-to-br from-blue-400 to-blue-600 rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
+                    <i class="fas fa-info text-sm text-white"></i>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-2 gradient-text">温馨提示</h4>
+                    <p class="text-sm text-white/80 leading-relaxed">
+                        以上建议仅供参考，不能替代专业医疗诊断。如果您的心理状态持续不佳，请及时寻求专业心理咨询师或医生的帮助。
+                    </p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- 评价弹窗 -->
+    <div id="rating-modal" class="fixed inset-0 z-50 hidden modal-overlay">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div id="modal-content" class="w-full max-w-md modal-content rounded-3xl p-6">
+                <div class="text-center mb-6">
+                    <div class="w-16 h-16 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-star text-2xl text-white"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold gradient-text mb-2">评价本次咨询</h3>
+                    <p class="text-sm text-white/70">请为本次咨询服务评分</p>
+                </div>
+
+                <!-- 星级评分 -->
+                <div id="star-rating" class="star-rating">
+                    <i class="fas fa-star star" data-rating="1"></i>
+                    <i class="fas fa-star star" data-rating="2"></i>
+                    <i class="fas fa-star star" data-rating="3"></i>
+                    <i class="fas fa-star star" data-rating="4"></i>
+                    <i class="fas fa-star star" data-rating="5"></i>
+                </div>
+
+                <!-- 评分文本 -->
+                <div id="rating-text" class="text-center mb-6">
+                    <p class="text-lg font-semibold text-white/80">请选择评分</p>
+                </div>
+
+                <!-- 文字反馈 -->
+                <div id="feedback-section" class="mb-6">
+                    <label for="feedback-text" class="block text-sm font-medium text-white/80 mb-2">
+                        文字反馈（可选）
+                    </label>
+                    <textarea 
+                        id="feedback-text" 
+                        class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:border-white/30 resize-none"
+                        rows="3"
+                        placeholder="请分享您的体验和建议..."
+                    ></textarea>
+                </div>
+
+                <!-- 按钮 -->
+                <div class="flex space-x-3">
+                    <button id="cancel-rating" class="flex-1 py-3 px-4 bg-white/10 border border-white/20 rounded-xl text-white hover:bg-white/20 transition-colors">
+                        取消
+                    </button>
+                    <button id="submit-rating" class="flex-1 py-3 px-4 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-xl text-white font-semibold hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                        提交评价
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 解析URL参数的辅助函数
+            function getUrlParams() {
+                const params = {};
+                const queryString = window.location.search.substring(1);
+                const urlParams = new URLSearchParams(queryString);
+                
+                for(const [key, value] of urlParams.entries()) {
+                    params[key] = value;
+                }
+                return params;
+            }
+
+            // 获取URL参数
+            const params = getUrlParams();
+            
+            // 模拟咨询数据
+            const counselingData = {
+                'conversation1': {
+                    theme: '情绪管理',
+                    date: '2024年1月15日 14:30',
+                    duration: '25分钟',
+                    summary: [
+                        {
+                            title: '情绪识别与接纳',
+                            icon: 'fas fa-heart',
+                            color: 'text-yellow-300',
+                            iconColor: 'text-yellow-400',
+                            content: '认识到焦虑是正常的情绪反应，学会观察和接纳自己的情绪变化。当感到焦虑时，可以尝试深呼吸练习，帮助自己平静下来。'
+                        },
+                        {
+                            title: '日常调节技巧',
+                            icon: 'fas fa-leaf',
+                            color: 'text-green-300',
+                            iconColor: 'text-green-400',
+                            content: '建议每天进行10-15分钟的正念冥想练习，有助于提升情绪调节能力。同时，保持规律的作息和适度的运动也很重要。'
+                        },
+                        {
+                            title: '认知调整方法',
+                            icon: 'fas fa-book',
+                            color: 'text-blue-300',
+                            iconColor: 'text-blue-400',
+                            content: '学会识别负面思维模式，尝试用更积极、理性的方式看待问题。可以通过写日记的方式记录自己的想法和感受。'
+                        },
+                        {
+                            title: '后续建议',
+                            icon: 'fas fa-calendar-check',
+                            color: 'text-purple-300',
+                            iconColor: 'text-purple-400',
+                            content: '建议继续保持情绪记录，定期回顾自己的情绪变化。如果焦虑症状持续或加重，建议考虑专业心理咨询师的帮助。'
+                        }
+                    ]
+                },
+                'conversation2': {
+                    theme: '压力缓解',
+                    date: '2024年1月14日 16:45',
+                    duration: '30分钟',
+                    summary: [
+                        {
+                            title: '压力源识别',
+                            icon: 'fas fa-search',
+                            color: 'text-blue-300',
+                            iconColor: 'text-blue-400',
+                            content: '学会识别生活中的主要压力源，了解压力对身心的影响机制。'
+                        },
+                        {
+                            title: '放松技巧',
+                            icon: 'fas fa-spa',
+                            color: 'text-green-300',
+                            iconColor: 'text-green-400',
+                            content: '掌握渐进式肌肉放松法和深呼吸技巧，在压力大时能够快速放松。'
+                        }
+                    ]
+                }
+            };
+
+            // 根据参数加载咨询数据
+            function loadCounselingData(conversationId) {
+                const data = counselingData[conversationId] || counselingData['conversation1'];
+                
+                // 更新咨询信息
+                document.querySelector('#counseling-theme').textContent = data.theme;
+                document.querySelector('#counseling-date').textContent = data.date;
+                document.querySelector('#counseling-duration').textContent = data.duration;
+                
+                // 更新建议内容
+                const summaryContent = document.querySelector('#summary-content');
+                summaryContent.innerHTML = '';
+                
+                data.summary.forEach(item => {
+                    const itemElement = document.createElement('div');
+                    itemElement.className = 'bg-white/5 rounded-2xl p-4 border border-white/10';
+                    itemElement.innerHTML = `
+                        <h4 class="font-semibold mb-2 ${item.color}">
+                            <i class="${item.icon} ${item.iconColor} mr-2"></i>
+                            ${item.title}
+                        </h4>
+                        <p class="text-sm text-white/80 leading-relaxed">
+                            ${item.content}
+                        </p>
+                    `;
+                    summaryContent.appendChild(itemElement);
+                });
+            }
+
+            // 如果有conversation_id参数，加载对应数据
+            if (params.conversation_id) {
+                loadCounselingData(params.conversation_id);
+            }
+
+            // 返回按钮点击事件
+            document.querySelector('#back-btn').addEventListener('click', function() {
+                window.location.href = 'P-HOME.html';
+            });
+
+            // 评价按钮点击事件
+            document.querySelector('#rating-btn').addEventListener('click', function() {
+                document.querySelector('#rating-modal').classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+            });
+
+            // 取消评价
+            document.querySelector('#cancel-rating').addEventListener('click', function() {
+                document.querySelector('#rating-modal').classList.add('hidden');
+                document.body.style.overflow = 'auto';
+                resetRating();
+            });
+
+            // 点击弹窗外部关闭
+            document.querySelector('#rating-modal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.classList.add('hidden');
+                    document.body.style.overflow = 'auto';
+                    resetRating();
+                }
+            });
+
+            // 星级评分功能
+            let selectedRating = 0;
+            const stars = document.querySelectorAll('.star');
+            const ratingText = document.querySelector('#rating-text p');
+            const submitBtn = document.querySelector('#submit-rating');
+
+            const ratingTexts = {
+                1: '很不满意',
+                2: '不满意', 
+                3: '一般',
+                4: '满意',
+                5: '非常满意'
+            };
+
+            stars.forEach((star, index) => {
+                star.addEventListener('click', function() {
+                    selectedRating = index + 1;
+                    updateStarDisplay();
+                    updateRatingText();
+                    updateSubmitButton();
+                });
+
+                star.addEventListener('mouseenter', function() {
+                    highlightStars(index + 1);
+                });
+            });
+
+            document.querySelector('#star-rating').addEventListener('mouseleave', function() {
+                updateStarDisplay();
+            });
+
+            function highlightStars(rating) {
+                stars.forEach((star, index) => {
+                    if (index < rating) {
+                        star.classList.add('active');
+                    } else {
+                        star.classList.remove('active');
+                    }
+                });
+            }
+
+            function updateStarDisplay() {
+                highlightStars(selectedRating);
+            }
+
+            function updateRatingText() {
+                if (selectedRating > 0) {
+                    ratingText.textContent = ratingTexts[selectedRating];
+                    ratingText.className = 'text-lg font-semibold text-yellow-300';
+                } else {
+                    ratingText.textContent = '请选择评分';
+                    ratingText.className = 'text-lg font-semibold text-white/80';
+                }
+            }
+
+            function updateSubmitButton() {
+                if (selectedRating > 0) {
+                    submitBtn.disabled = false;
+                    submitBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                } else {
+                    submitBtn.disabled = true;
+                    submitBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                }
+            }
+
+            function resetRating() {
+                selectedRating = 0;
+                updateStarDisplay();
+                updateRatingText();
+                updateSubmitButton();
+                document.querySelector('#feedback-text').value = '';
+            }
+
+            // 提交评价
+            document.querySelector('#submit-rating').addEventListener('click', function() {
+                if (selectedRating === 0) return;
+
+                const feedbackText = document.querySelector('#feedback-text').value.trim();
+                
+                // 模拟提交评价
+                this.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>提交中...';
+                this.disabled = true;
+
+                setTimeout(() => {
+                    // 显示成功提示
+                    alert('评价成功！感谢您的反馈。');
+                    
+                    // 关闭弹窗
+                    document.querySelector('#rating-modal').classList.add('hidden');
+                    document.body.style.overflow = 'auto';
+                    
+                    // 返回首页
+                    window.location.href = 'P-HOME.html';
+                }, 1500);
+            });
+
+            // 添加页面加载动画
+            const cards = document.querySelectorAll('.glass-card');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                setTimeout(() => {
+                    card.style.transition = 'all 0.6s ease';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+        });
+    </script>
+</body>
+</html>

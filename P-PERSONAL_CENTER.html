@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>心愈伴 - 个人中心</title>
+    <script src="https://unpkg.byted-static.com/coze/space_ppt_lib/1.0.3-alpha.12/lib/tailwindcss.js"></script>
+    <script src="https://unpkg.byted-static.com/fortawesome/fontawesome-free/6.7.2/js/all.min.js" data-auto-replace-svg="nest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#6366f1',
+                        secondary: '#8b5cf6',
+                        tertiary: '#06b6d4',
+                        success: '#10b981',
+                        danger: '#ef4444',
+                        warning: '#f59e0b',
+                        info: '#3b82f6',
+                        'glass-bg': 'rgba(255, 255, 255, 0.1)',
+                        'glass-border': 'rgba(255, 255, 255, 0.2)',
+                        'dark-glass': 'rgba(0, 0, 0, 0.1)',
+                    },
+                    backdropBlur: {
+                        'xs': '2px',
+                    },
+                    boxShadow: {
+                        'glass': '0 8px 32px 0 rgba(31, 38, 135, 0.37)',
+                        'glass-inset': 'inset 0 1px 0 0 rgba(255, 255, 255, 0.05)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        }
+        
+        .glass-nav {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .glass-button {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .glass-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.4);
+        }
+        
+        .status-indicator {
+            background: linear-gradient(45deg, #10b981, #059669);
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.5);
+        }
+        
+        .gradient-text {
+            background: linear-gradient(45deg, #ffffff, #e5e7eb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .floating-animation {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .pulse-animation {
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .menu-item {
+            transition: all 0.3s ease;
+        }
+
+        .menu-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(5px);
+        }
+
+        .logout-button {
+            background: linear-gradient(45deg, #ef4444, #dc2626);
+            transition: all 0.3s ease;
+        }
+
+        .logout-button:hover {
+            background: linear-gradient(45deg, #dc2626, #b91c1c);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px 0 rgba(239, 68, 68, 0.4);
+        }
+    </style>
+</head>
+<body class="font-sans text-white overflow-x-hidden">
+    <!-- iOS状态栏 -->
+    <div id="status-bar" class="flex justify-between items-center px-6 py-2 text-sm font-medium">
+        <div class="flex items-center space-x-1">
+            <span>9:41</span>
+        </div>
+        <div class="flex items-center space-x-1">
+            <i class="fas fa-signal text-xs"></i>
+            <i class="fas fa-wifi text-xs"></i>
+            <div class="w-6 h-3 border border-white rounded-sm">
+                <div class="w-4 h-1.5 bg-white rounded-sm m-0.5"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 主要内容区域 -->
+    <div id="main-content" class="px-4 pb-20">
+        <!-- 用户信息头部 -->
+        <header id="user-header" class="glass-card rounded-3xl p-6 mb-6 floating-animation">
+            <div id="user-info" class="flex items-center space-x-4 cursor-pointer">
+                <div class="relative">
+                    <img id="user-avatar" src="https://s.coze.cn/image/L4Eg54hnRbw/" 
+                         alt="用户头像" class="w-20 h-20 rounded-full border-3 border-white/30 shadow-lg">
+                    <div class="absolute -bottom-1 -right-1 w-6 h-6 status-indicator rounded-full border-2 border-white"></div>
+                </div>
+                <div class="flex-1">
+                    <h1 id="user-nickname" class="text-xl font-bold gradient-text mb-1">小雨</h1>
+                    <p id="user-id" class="text-sm text-white/70 mb-2">ID: XY2024001</p>
+                    <div class="flex items-center space-x-4">
+                        <div class="text-center">
+                            <p class="text-lg font-semibold gradient-text">15</p>
+                            <p class="text-xs text-white/70">咨询次数</p>
+                        </div>
+                        <div class="text-center">
+                            <p class="text-lg font-semibold gradient-text">8.2</p>
+                            <p class="text-xs text-white/70">平均情绪指数</p>
+                        </div>
+                    </div>
+                </div>
+                <i class="fas fa-chevron-right text-white/50"></i>
+            </div>
+        </header>
+
+        <!-- 功能菜单列表 -->
+        <section id="function-menu" class="mb-6">
+            <div id="menu-list" class="space-y-3">
+                <!-- 个人资料 -->
+                <div id="profile-menu" class="glass-card rounded-2xl p-4 menu-item cursor-pointer">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-12 h-12 bg-gradient-to-br from-blue-400 to-blue-600 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-user-edit text-xl text-white"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="font-semibold">个人资料</h3>
+                            <p class="text-sm text-white/70">修改头像、昵称等信息</p>
+                        </div>
+                        <i class="fas fa-chevron-right text-white/50"></i>
+                    </div>
+                </div>
+
+                <!-- 历史咨询记录 -->
+                <div id="history-menu" class="glass-card rounded-2xl p-4 menu-item cursor-pointer">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-12 h-12 bg-gradient-to-br from-purple-400 to-purple-600 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-history text-xl text-white"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="font-semibold">历史咨询记录</h3>
+                            <p class="text-sm text-white/70">查看过往咨询和陪伴记录</p>
+                        </div>
+                        <i class="fas fa-chevron-right text-white/50"></i>
+                    </div>
+                </div>
+
+                <!-- 隐私设置 -->
+                <div id="privacy-menu" class="glass-card rounded-2xl p-4 menu-item cursor-pointer">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-12 h-12 bg-gradient-to-br from-green-400 to-green-600 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-shield-alt text-xl text-white"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="font-semibold">隐私设置</h3>
+                            <p class="text-sm text-white/70">管理数据隐私和安全设置</p>
+                        </div>
+                        <i class="fas fa-chevron-right text-white/50"></i>
+                    </div>
+                </div>
+
+                <!-- 关于我们 -->
+                <div id="about-menu" class="glass-card rounded-2xl p-4 menu-item cursor-pointer">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-12 h-12 bg-gradient-to-br from-orange-400 to-orange-600 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-info-circle text-xl text-white"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="font-semibold">关于我们</h3>
+                            <p class="text-sm text-white/70">应用介绍和联系方式</p>
+                        </div>
+                        <i class="fas fa-chevron-right text-white/50"></i>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 退出登录按钮 -->
+        <section id="logout-section" class="mb-6">
+            <button id="logout-button" class="w-full logout-button rounded-2xl p-4 text-center">
+                <i class="fas fa-sign-out-alt text-xl text-white mb-2"></i>
+                <p class="font-semibold text-white">退出登录</p>
+            </button>
+        </section>
+    </div>
+
+    <!-- 底部导航栏 -->
+    <nav id="bottom-nav" class="fixed bottom-0 left-0 right-0 glass-nav flex justify-around items-center h-16 px-2 z-40">
+        <a id="nav-home" href="P-HOME.html" class="flex flex-col items-center p-2 text-white/60 hover:text-white transition-colors">
+            <i class="fas fa-home text-xl mb-1"></i>
+            <span class="text-xs">首页</span>
+        </a>
+        <a id="nav-counseling" href="P-COUNSELING.html" class="flex flex-col items-center p-2 text-white/60 hover:text-white transition-colors">
+            <i class="fas fa-user-md text-xl mb-1"></i>
+            <span class="text-xs">咨询</span>
+        </a>
+        <a id="nav-companionship" href="P-COMPANIONSHIP.html" class="flex flex-col items-center p-2 text-white/60 hover:text-white transition-colors">
+            <i class="fas fa-heart text-xl mb-1"></i>
+            <span class="text-xs">陪伴</span>
+        </a>
+        <a id="nav-profile" href="#" class="flex flex-col items-center p-2 text-white">
+            <i class="fas fa-user text-xl mb-1"></i>
+            <span class="text-xs">我的</span>
+        </a>
+    </nav>
+
+    <!-- 退出登录确认弹窗 -->
+    <div id="logout-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="glass-card rounded-3xl p-6 w-full max-w-sm">
+            <div class="text-center">
+                <div class="w-16 h-16 bg-gradient-to-br from-red-400 to-red-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-sign-out-alt text-2xl text-white"></i>
+                </div>
+                <h3 class="text-lg font-semibold mb-2">确认退出登录</h3>
+                <p class="text-sm text-white/70 mb-6">退出后需要重新登录才能使用完整功能</p>
+                <div class="flex space-x-3">
+                    <button id="cancel-logout" class="flex-1 glass-button rounded-xl py-3 text-center">
+                        <span class="font-medium">取消</span>
+                    </button>
+                    <button id="confirm-logout" class="flex-1 logout-button rounded-xl py-3 text-center">
+                        <span class="font-medium text-white">确认退出</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 用户信息点击事件 - 跳转到个人资料设置页
+            document.querySelector('#user-info').addEventListener('click', function() {
+                window.location.href = 'P-PROFILE_SETTINGS.html';
+            });
+
+            // 个人资料菜单点击事件
+            document.querySelector('#profile-menu').addEventListener('click', function() {
+                window.location.href = 'P-PROFILE_SETTINGS.html';
+            });
+
+            // 历史咨询记录菜单点击事件
+            document.querySelector('#history-menu').addEventListener('click', function() {
+                window.location.href = 'P-HISTORY.html';
+            });
+
+            // 隐私设置菜单点击事件
+            document.querySelector('#privacy-menu').addEventListener('click', function() {
+                window.location.href = 'P-PRIVACY_SETTINGS.html';
+            });
+
+            // 关于我们菜单点击事件
+            document.querySelector('#about-menu').addEventListener('click', function() {
+                window.location.href = 'P-ABOUT_US.html';
+            });
+
+            // 退出登录按钮点击事件
+            document.querySelector('#logout-button').addEventListener('click', function() {
+                document.querySelector('#logout-modal').classList.remove('hidden');
+            });
+
+            // 取消退出登录
+            document.querySelector('#cancel-logout').addEventListener('click', function() {
+                document.querySelector('#logout-modal').classList.add('hidden');
+            });
+
+            // 确认退出登录
+            document.querySelector('#confirm-logout').addEventListener('click', function() {
+                // 清除用户登录状态（在实际应用中会清除token等）
+                localStorage.removeItem('userToken');
+                sessionStorage.clear();
+                
+                // 跳转到登录页
+                window.location.href = 'P-REGISTER_LOGIN.html';
+            });
+
+            // 底部导航栏点击事件
+            document.querySelector('#nav-home').addEventListener('click', function(e) {
+                e.preventDefault();
+                window.location.href = 'P-HOME.html';
+            });
+
+            document.querySelector('#nav-counseling').addEventListener('click', function(e) {
+                e.preventDefault();
+                window.location.href = 'P-COUNSELING.html';
+            });
+
+            document.querySelector('#nav-companionship').addEventListener('click', function(e) {
+                e.preventDefault();
+                window.location.href = 'P-COMPANIONSHIP.html';
+            });
+
+            document.querySelector('#nav-profile').addEventListener('click', function(e) {
+                e.preventDefault();
+                // 已在个人中心页面，无需操作
+            });
+
+            // 点击弹窗外部关闭弹窗
+            document.querySelector('#logout-modal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.classList.add('hidden');
+                }
+            });
+
+            // 添加页面加载动画
+            const cards = document.querySelectorAll('.glass-card');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                setTimeout(() => {
+                    card.style.transition = 'all 0.6s ease';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+        });
+    </script>
+</body>
+</html>

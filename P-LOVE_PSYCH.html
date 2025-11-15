@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>心愈伴 - 恋爱心理指导</title>
+    <script src="https://unpkg.byted-static.com/coze/space_ppt_lib/1.0.3-alpha.12/lib/tailwindcss.js"></script>
+    <script src="https://unpkg.byted-static.com/fortawesome/fontawesome-free/6.7.2/js/all.min.js" data-auto-replace-svg="nest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#6366f1',
+                        secondary: '#8b5cf6',
+                        tertiary: '#06b6d4',
+                        success: '#10b981',
+                        danger: '#ef4444',
+                        warning: '#f59e0b',
+                        info: '#3b82f6',
+                        'glass-bg': 'rgba(255, 255, 255, 0.1)',
+                        'glass-border': 'rgba(255, 255, 255, 0.2)',
+                        'dark-glass': 'rgba(0, 0, 0, 0.1)',
+                    },
+                    backdropBlur: {
+                        'xs': '2px',
+                    },
+                    boxShadow: {
+                        'glass': '0 8px 32px 0 rgba(31, 38, 135, 0.37)',
+                        'glass-inset': 'inset 0 1px 0 0 rgba(255, 255, 255, 0.05)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        }
+        
+        .glass-button {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .glass-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.4);
+        }
+        
+        .gradient-text {
+            background: linear-gradient(45deg, #ffffff, #e5e7eb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .floating-animation {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .pulse-animation {
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
+        .love-gradient {
+            background: linear-gradient(135deg, #ff6b9d, #c44569);
+        }
+        
+        .article-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 16px 48px 0 rgba(31, 38, 135, 0.5);
+        }
+    </style>
+</head>
+<body class="font-sans text-white overflow-x-hidden">
+    <!-- iOS状态栏 -->
+    <div id="status-bar" class="flex justify-between items-center px-6 py-2 text-sm font-medium">
+        <div class="flex items-center space-x-1">
+            <span>9:41</span>
+        </div>
+        <div class="flex items-center space-x-1">
+            <i class="fas fa-signal text-xs"></i>
+            <i class="fas fa-wifi text-xs"></i>
+            <div class="w-6 h-3 border border-white rounded-sm">
+                <div class="w-4 h-1.5 bg-white rounded-sm m-0.5"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 主要内容区域 -->
+    <div id="main-content" class="px-4 pb-8">
+        <!-- 顶部导航栏 -->
+        <header id="top-nav" class="flex items-center py-4 mb-6">
+            <button id="back-btn" class="p-2 glass-button rounded-full mr-4 hover:scale-105 transition-transform">
+                <i class="fas fa-arrow-left text-lg"></i>
+            </button>
+            <h1 id="page-title" class="text-xl font-bold gradient-text">恋爱心理指导</h1>
+        </header>
+
+        <!-- 恋爱主题介绍 -->
+        <section id="love-intro" class="glass-card rounded-3xl p-6 mb-6 floating-animation">
+            <div class="text-center mb-4">
+                <div class="w-20 h-20 mx-auto mb-4 love-gradient rounded-full flex items-center justify-center">
+                    <i class="fas fa-heart text-3xl text-white"></i>
+                </div>
+                <h2 id="intro-title" class="text-lg font-semibold mb-2 gradient-text">探索爱的奥秘</h2>
+                <p id="intro-description" class="text-sm text-white/70">专业的恋爱心理学知识，助你建立健康的亲密关系</p>
+            </div>
+        </section>
+
+        <!-- 快捷功能入口 -->
+        <section id="quick-actions" class="mb-6">
+            <h3 id="actions-title" class="text-lg font-semibold mb-4 gradient-text">专业服务</h3>
+            <div id="actions-grid" class="grid grid-cols-2 gap-4">
+                <button id="love-consulting-btn" class="glass-button rounded-2xl p-4 text-left group hover:scale-105 transition-transform">
+                    <div class="w-12 h-12 love-gradient rounded-xl flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                        <i class="fas fa-comments-heart text-xl text-white"></i>
+                    </div>
+                    <h4 class="font-semibold mb-1">恋爱问题咨询</h4>
+                    <p class="text-sm text-white/70">一对一专业指导</p>
+                </button>
+                
+                <button id="love-assessment-btn" class="glass-button rounded-2xl p-4 text-left group hover:scale-105 transition-transform">
+                    <div class="w-12 h-12 bg-gradient-to-br from-purple-400 to-purple-600 rounded-xl flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                        <i class="fas fa-heart-pulse text-xl text-white"></i>
+                    </div>
+                    <h4 class="font-semibold mb-1">恋爱关系评估</h4>
+                    <p class="text-sm text-white/70">科学量表测试</p>
+                </button>
+            </div>
+        </section>
+
+        <!-- 恋爱知识文章列表 -->
+        <section id="love-articles" class="mb-6">
+            <div class="flex justify-between items-center mb-4">
+                <h3 id="articles-title" class="text-lg font-semibold gradient-text">恋爱知识</h3>
+                <button id="more-articles" class="text-sm text-white/70 hover:text-white transition-colors">
+                    更多 <i class="fas fa-chevron-right ml-1"></i>
+                </button>
+            </div>
+            <div id="articles-list" class="space-y-4">
+                <div id="article-1" class="glass-card rounded-2xl p-4 article-card transition-all duration-300 cursor-pointer" data-article-id="article_001">
+                    <div class="flex items-start space-x-4">
+                        <div class="w-12 h-12 love-gradient rounded-xl flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-heart text-xl text-white"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="font-semibold mb-2">如何建立健康的恋爱关系</h4>
+                            <p class="text-sm text-white/70 mb-2">了解恋爱关系的基本要素，学会有效沟通和相互理解</p>
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs text-white/50">2天前</span>
+                                <span class="text-xs text-white/50">
+                                    <i class="fas fa-eye mr-1"></i>1.2k
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="article-2" class="glass-card rounded-2xl p-4 article-card transition-all duration-300 cursor-pointer" data-article-id="article_002">
+                    <div class="flex items-start space-x-4">
+                        <div class="w-12 h-12 bg-gradient-to-br from-pink-400 to-rose-500 rounded-xl flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-comments text-xl text-white"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="font-semibold mb-2">恋爱中的有效沟通技巧</h4>
+                            <p class="text-sm text-white/70 mb-2">掌握非暴力沟通方法，让爱情更加美好</p>
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs text-white/50">3天前</span>
+                                <span class="text-xs text-white/50">
+                                    <i class="fas fa-eye mr-1"></i>856
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="article-3" class="glass-card rounded-2xl p-4 article-card transition-all duration-300 cursor-pointer" data-article-id="article_003">
+                    <div class="flex items-start space-x-4">
+                        <div class="w-12 h-12 bg-gradient-to-br from-purple-400 to-indigo-500 rounded-xl flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-user-friends text-xl text-white"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="font-semibold mb-2">如何处理恋爱中的冲突</h4>
+                            <p class="text-sm text-white/70 mb-2">学会建设性地解决分歧，让关系更加稳固</p>
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs text-white/50">5天前</span>
+                                <span class="text-xs text-white/50">
+                                    <i class="fas fa-eye mr-1"></i>642
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="article-4" class="glass-card rounded-2xl p-4 article-card transition-all duration-300 cursor-pointer" data-article-id="article_004">
+                    <div class="flex items-start space-x-4">
+                        <div class="w-12 h-12 bg-gradient-to-br from-red-400 to-pink-500 rounded-xl flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-heart-broken text-xl text-white"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="font-semibold mb-2">失恋后的心理调适</h4>
+                            <p class="text-sm text-white/70 mb-2">科学的方法帮助你走出失恋阴影，重新找回自己</p>
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs text-white/50">1周前</span>
+                                <span class="text-xs text-white/50">
+                                    <i class="fas fa-eye mr-1"></i>934
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="article-5" class="glass-card rounded-2xl p-4 article-card transition-all duration-300 cursor-pointer" data-article-id="article_005">
+                    <div class="flex items-start space-x-4">
+                        <div class="w-12 h-12 bg-gradient-to-br from-orange-400 to-red-500 rounded-xl flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-mars-venus text-xl text-white"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="font-semibold mb-2">男女思维差异与恋爱</h4>
+                            <p class="text-sm text-white/70 mb-2">了解性别差异，改善恋爱中的相互理解</p>
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs text-white/50">1周前</span>
+                                <span class="text-xs text-white/50">
+                                    <i class="fas fa-eye mr-1"></i>723
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 温馨提示 -->
+        <section id="love-tips" class="glass-card rounded-2xl p-4 mb-6">
+            <div class="flex items-start space-x-3">
+                <div class="w-8 h-8 bg-yellow-500 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <i class="fas fa-lightbulb text-sm text-white"></i>
+                </div>
+                <div class="flex-1">
+                    <h4 class="font-semibold mb-2">温馨提示</h4>
+                    <p class="text-sm text-white/70">恋爱是人生美好的体验，遇到困惑时记得寻求专业帮助。我们的AI助手随时为你提供支持。</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 返回按钮点击事件
+            document.querySelector('#back-btn').addEventListener('click', function() {
+                window.location.href = 'P-HOME.html';
+            });
+
+            // 恋爱问题咨询按钮点击事件
+            document.querySelector('#love-consulting-btn').addEventListener('click', function() {
+                window.location.href = 'P-COUNSELING.html?theme_id=恋爱心理';
+            });
+
+            // 恋爱关系评估按钮点击事件
+            document.querySelector('#love-assessment-btn').addEventListener('click', function() {
+                window.location.href = 'P-ASSESSMENT_QUESTIONS.html?scale_id=恋爱关系评估';
+            });
+
+            // 更多文章按钮点击事件
+            document.querySelector('#more-articles').addEventListener('click', function() {
+                window.location.href = 'P-KNOWLEDGE.html?category=恋爱心理';
+            });
+
+            // 文章列表项点击事件
+            const articleCards = document.querySelectorAll('.article-card');
+            articleCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    const articleId = this.getAttribute('data-article-id');
+                    window.location.href = `P-ARTICLE_DETAIL.html?article_id=${articleId}`;
+                });
+            });
+
+            // 添加页面加载动画
+            const cards = document.querySelectorAll('.glass-card');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                setTimeout(() => {
+                    card.style.transition = 'all 0.6s ease';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+        });
+    </script>
+</body>
+</html>

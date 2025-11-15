@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>心愈伴 - 情绪记录</title>
+    <script src="https://unpkg.byted-static.com/coze/space_ppt_lib/1.0.3-alpha.12/lib/tailwindcss.js"></script>
+    <script src="https://unpkg.byted-static.com/fortawesome/fontawesome-free/6.7.2/js/all.min.js" data-auto-replace-svg="nest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#6366f1',
+                        secondary: '#8b5cf6',
+                        tertiary: '#06b6d4',
+                        success: '#10b981',
+                        danger: '#ef4444',
+                        warning: '#f59e0b',
+                        info: '#3b82f6',
+                        'glass-bg': 'rgba(255, 255, 255, 0.1)',
+                        'glass-border': 'rgba(255, 255, 255, 0.2)',
+                        'dark-glass': 'rgba(0, 0, 0, 0.1)',
+                    },
+                    backdropBlur: {
+                        'xs': '2px',
+                    },
+                    boxShadow: {
+                        'glass': '0 8px 32px 0 rgba(31, 38, 135, 0.37)',
+                        'glass-inset': 'inset 0 1px 0 0 rgba(255, 255, 255, 0.05)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        }
+        
+        .glass-button {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .glass-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.4);
+        }
+        
+        .gradient-text {
+            background: linear-gradient(45deg, #ffffff, #e5e7eb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .floating-animation {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .mood-circle {
+            transition: all 0.3s ease;
+        }
+        
+        .mood-circle:hover {
+            transform: scale(1.1);
+        }
+        
+        .calendar-day {
+            transition: all 0.3s ease;
+        }
+        
+        .calendar-day:hover {
+            transform: scale(1.05);
+        }
+        
+        .chart-line {
+            stroke-dasharray: 1000;
+            stroke-dashoffset: 1000;
+            animation: draw 2s ease-in-out forwards;
+        }
+        
+        @keyframes draw {
+            to {
+                stroke-dashoffset: 0;
+            }
+        }
+        
+        .emotion-tag {
+            transition: all 0.3s ease;
+        }
+        
+        .emotion-tag:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body class="font-sans text-white overflow-x-hidden">
+    <!-- iOS状态栏 -->
+    <div id="status-bar" class="flex justify-between items-center px-6 py-2 text-sm font-medium">
+        <div class="flex items-center space-x-1">
+            <span>9:41</span>
+        </div>
+        <div class="flex items-center space-x-1">
+            <i class="fas fa-signal text-xs"></i>
+            <i class="fas fa-wifi text-xs"></i>
+            <div class="w-6 h-3 border border-white rounded-sm">
+                <div class="w-4 h-1.5 bg-white rounded-sm m-0.5"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 主要内容区域 -->
+    <div id="main-content" class="px-4 pb-6">
+        <!-- 顶部导航栏 -->
+        <header id="top-nav" class="flex items-center py-4 mb-6">
+            <button id="back-btn" class="mr-4 p-2 glass-button rounded-full hover:scale-105 transition-transform">
+                <i class="fas fa-arrow-left text-lg"></i>
+            </button>
+            <h1 id="page-title" class="text-xl font-semibold gradient-text">情绪记录</h1>
+        </header>
+
+        <!-- 记录今日情绪按钮 -->
+        <section id="record-section" class="mb-6">
+            <button id="record-emotion-btn" class="w-full glass-button rounded-2xl p-6 text-center group hover:scale-105 transition-transform floating-animation">
+                <div class="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <i class="fas fa-plus text-2xl text-white"></i>
+                </div>
+                <h2 class="text-lg font-semibold mb-2">记录今日情绪</h2>
+                <p class="text-sm text-white/70">记录你的心情，让每一天都有迹可循</p>
+            </button>
+        </section>
+
+        <!-- 情绪趋势图 -->
+        <section id="emotion-trend" class="glass-card rounded-3xl p-6 mb-6">
+            <div class="flex justify-between items-center mb-4">
+                <h2 id="trend-title" class="text-lg font-semibold gradient-text">情绪趋势</h2>
+                <div class="flex space-x-2">
+                    <button id="week-view" class="px-3 py-1 text-sm bg-white/20 rounded-full">周</button>
+                    <button id="month-view" class="px-3 py-1 text-sm text-white/70 rounded-full">月</button>
+                </div>
+            </div>
+            
+            <!-- 趋势图表 -->
+            <div id="chart-container" class="relative h-48 mb-4">
+                <svg id="emotion-chart" class="w-full h-full" viewBox="0 0 300 150">
+                    <!-- 网格线 -->
+                    <defs>
+                        <pattern id="grid" width="40" height="30" patternUnits="userSpaceOnUse">
+                            <path d="M 40 0 L 0 0 0 30" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+                        </pattern>
+                    </defs>
+                    <rect width="100%" height="100%" fill="url(#grid)" />
+                    
+                    <!-- Y轴标签 -->
+                    <text x="10" y="20" text-anchor="middle" class="text-xs text-white/70">10</text>
+                    <text x="10" y="50" text-anchor="middle" class="text-xs text-white/70">7.5</text>
+                    <text x="10" y="80" text-anchor="middle" class="text-xs text-white/70">5</text>
+                    <text x="10" y="110" text-anchor="middle" class="text-xs text-white/70">2.5</text>
+                    <text x="10" y="140" text-anchor="middle" class="text-xs text-white/70">0</text>
+                    
+                    <!-- 情绪曲线 -->
+                    <polyline id="emotion-curve" 
+                              points="40,60 80,40 120,70 160,35 200,55 240,45 280,30" 
+                              fill="none" 
+                              stroke="url(#gradient)" 
+                              stroke-width="3" 
+                              class="chart-line"/>
+                    
+                    <!-- 渐变定义 -->
+                    <defs>
+                        <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" style="stop-color:#fbbf24;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#f59e0b;stop-opacity:1" />
+                        </linearGradient>
+                    </defs>
+                    
+                    <!-- 数据点 -->
+                    <circle cx="40" cy="60" r="4" fill="#fbbf24"/>
+                    <circle cx="80" cy="40" r="4" fill="#fbbf24"/>
+                    <circle cx="120" cy="70" r="4" fill="#fbbf24"/>
+                    <circle cx="160" cy="35" r="4" fill="#fbbf24"/>
+                    <circle cx="200" cy="55" r="4" fill="#fbbf24"/>
+                    <circle cx="240" cy="45" r="4" fill="#fbbf24"/>
+                    <circle cx="280" cy="30" r="4" fill="#fbbf24"/>
+                </svg>
+            </div>
+            
+            <!-- 趋势说明 -->
+            <div id="trend-summary" class="text-center">
+                <p class="text-sm text-white/70 mb-1">本周平均情绪指数</p>
+                <p class="text-2xl font-bold gradient-text">7.8</p>
+                <p class="text-sm text-white/70">整体情绪稳定，状态良好</p>
+            </div>
+        </section>
+
+        <!-- 情绪日历 -->
+        <section id="emotion-calendar" class="glass-card rounded-3xl p-6 mb-6">
+            <h2 id="calendar-title" class="text-lg font-semibold mb-4 gradient-text">情绪日历</h2>
+            
+            <!-- 月份导航 -->
+            <div id="month-nav" class="flex justify-between items-center mb-4">
+                <button id="prev-month" class="p-2 glass-button rounded-full hover:scale-105 transition-transform">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <h3 id="current-month" class="text-lg font-medium">2024年3月</h3>
+                <button id="next-month" class="p-2 glass-button rounded-full hover:scale-105 transition-transform">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+            
+            <!-- 日历网格 -->
+            <div id="calendar-grid" class="grid grid-cols-7 gap-2 mb-4">
+                <!-- 星期标题 -->
+                <div class="text-center text-sm text-white/70 py-2">日</div>
+                <div class="text-center text-sm text-white/70 py-2">一</div>
+                <div class="text-center text-sm text-white/70 py-2">二</div>
+                <div class="text-center text-sm text-white/70 py-2">三</div>
+                <div class="text-center text-sm text-white/70 py-2">四</div>
+                <div class="text-center text-sm text-white/70 py-2">五</div>
+                <div class="text-center text-sm text-white/70 py-2">六</div>
+                
+                <!-- 日期 -->
+                <div class="calendar-day text-center py-2 text-white/50">25</div>
+                <div class="calendar-day text-center py-2 text-white/50">26</div>
+                <div class="calendar-day text-center py-2 text-white/50">27</div>
+                <div class="calendar-day text-center py-2 text-white/50">28</div>
+                <div class="calendar-day text-center py-2 text-white/50">29</div>
+                <div class="calendar-day text-center py-2 text-white/50">1</div>
+                <div class="calendar-day text-center py-2 text-white/50">2</div>
+                
+                <div class="calendar-day text-center py-2 text-white/50">3</div>
+                <div class="calendar-day text-center py-2 text-white/50">4</div>
+                <div class="calendar-day text-center py-2 text-white/50">5</div>
+                <div class="calendar-day text-center py-2 text-white/50">6</div>
+                <div class="calendar-day text-center py-2 text-white/50">7</div>
+                <div class="calendar-day text-center py-2 text-white/50">8</div>
+                <div class="calendar-day text-center py-2 text-white/50">9</div>
+                
+                <div class="calendar-day text-center py-2 text-white/50">10</div>
+                <div class="calendar-day text-center py-2 text-white/50">11</div>
+                <div class="calendar-day text-center py-2 text-white/50">12</div>
+                <div class="calendar-day text-center py-2 text-white/50">13</div>
+                <div class="calendar-day text-center py-2 text-white/50">14</div>
+                <div class="calendar-day text-center py-2 text-white/50">15</div>
+                <div class="calendar-day text-center py-2 text-white/50">16</div>
+                
+                <div class="calendar-day text-center py-2 text-white/50">17</div>
+                <div class="calendar-day text-center py-2 text-white/50">18</div>
+                <div class="calendar-day text-center py-2 text-white/50">19</div>
+                <div class="calendar-day text-center py-2 text-white/50">20</div>
+                <div class="calendar-day text-center py-2 text-white/50">21</div>
+                <div class="calendar-day text-center py-2 text-white/50">22</div>
+                <div class="calendar-day text-center py-2 text-white/50">23</div>
+                
+                <div class="calendar-day text-center py-2 text-white/50">24</div>
+                <div class="calendar-day text-center py-2 text-white/50">25</div>
+                <div class="calendar-day text-center py-2 text-white/50">26</div>
+                <div class="calendar-day text-center py-2 text-white/50">27</div>
+                <div class="calendar-day text-center py-2 text-white/50">28</div>
+                <div class="calendar-day text-center py-2 text-white/50">29</div>
+                <div class="calendar-day text-center py-2 text-white/50">30</div>
+                
+                <div class="calendar-day text-center py-2 text-white/50">31</div>
+                <div class="calendar-day text-center py-2 text-white/50">1</div>
+                <div class="calendar-day text-center py-2 text-white/50">2</div>
+                <div class="calendar-day text-center py-2 text-white/50">3</div>
+                <div class="calendar-day text-center py-2 text-white/50">4</div>
+                <div class="calendar-day text-center py-2 text-white/50">5</div>
+                <div class="calendar-day text-center py-2 text-white/50">6</div>
+            </div>
+            
+            <!-- 图例 -->
+            <div id="calendar-legend" class="flex justify-center space-x-4 text-sm">
+                <div class="flex items-center space-x-2">
+                    <div class="w-3 h-3 bg-green-400 rounded-full"></div>
+                    <span class="text-white/70">良好 (8-10)</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <div class="w-3 h-3 bg-yellow-400 rounded-full"></div>
+                    <span class="text-white/70">一般 (5-7)</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <div class="w-3 h-3 bg-red-400 rounded-full"></div>
+                    <span class="text-white/70">较差 (1-4)</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 情绪标签统计 -->
+        <section id="emotion-tags" class="glass-card rounded-3xl p-6 mb-6">
+            <h2 id="tags-title" class="text-lg font-semibold mb-4 gradient-text">情绪标签统计</h2>
+            
+            <div id="tags-cloud" class="flex flex-wrap gap-3 mb-4">
+                <span class="emotion-tag px-4 py-2 bg-gradient-to-r from-green-400 to-green-500 rounded-full text-sm font-medium">开心</span>
+                <span class="emotion-tag px-4 py-2 bg-gradient-to-r from-blue-400 to-blue-500 rounded-full text-sm font-medium">平静</span>
+                <span class="emotion-tag px-4 py-2 bg-gradient-to-r from-yellow-400 to-yellow-500 rounded-full text-sm font-medium">焦虑</span>
+                <span class="emotion-tag px-4 py-2 bg-gradient-to-r from-purple-400 to-purple-500 rounded-full text-sm font-medium">兴奋</span>
+                <span class="emotion-tag px-4 py-2 bg-gradient-to-r from-pink-400 to-pink-500 rounded-full text-sm font-medium">疲惫</span>
+                <span class="emotion-tag px-4 py-2 bg-gradient-to-r from-indigo-400 to-indigo-500 rounded-full text-sm font-medium">专注</span>
+                <span class="emotion-tag px-4 py-2 bg-gradient-to-r from-orange-400 to-orange-500 rounded-full text-sm font-medium">紧张</span>
+                <span class="emotion-tag px-4 py-2 bg-gradient-to-r from-teal-400 to-teal-500 rounded-full text-sm font-medium">放松</span>
+            </div>
+            
+            <!-- 情绪分布 -->
+            <div id="emotion-distribution" class="space-y-3">
+                <div class="flex justify-between items-center">
+                    <span class="text-sm text-white/70">积极情绪</span>
+                    <span class="text-sm font-medium">75%</span>
+                </div>
+                <div class="w-full bg-white/20 rounded-full h-2">
+                    <div class="bg-gradient-to-r from-green-400 to-green-500 h-2 rounded-full" style="width: 75%"></div>
+                </div>
+                
+                <div class="flex justify-between items-center">
+                    <span class="text-sm text-white/70">中性情绪</span>
+                    <span class="text-sm font-medium">20%</span>
+                </div>
+                <div class="w-full bg-white/20 rounded-full h-2">
+                    <div class="bg-gradient-to-r from-blue-400 to-blue-500 h-2 rounded-full" style="width: 20%"></div>
+                </div>
+                
+                <div class="flex justify-between items-center">
+                    <span class="text-sm text-white/70">消极情绪</span>
+                    <span class="text-sm font-medium">5%</span>
+                </div>
+                <div class="w-full bg-white/20 rounded-full h-2">
+                    <div class="bg-gradient-to-r from-red-400 to-red-500 h-2 rounded-full" style="width: 5%"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 最近情绪记录 -->
+        <section id="recent-records" class="glass-card rounded-3xl p-6">
+            <div class="flex justify-between items-center mb-4">
+                <h2 id="recent-title" class="text-lg font-semibold gradient-text">最近记录</h2>
+                <button id="view-all-records" class="text-sm text-white/70 hover:text-white transition-colors">
+                    查看全部 <i class="fas fa-chevron-right ml-1"></i>
+                </button>
+            </div>
+            
+            <div id="records-list" class="space-y-3">
+                <div id="record-1" class="flex items-center space-x-4 p-3 bg-white/5 rounded-xl">
+                    <div class="w-12 h-12 bg-gradient-to-br from-green-400 to-green-500 rounded-full flex items-center justify-center">
+                        <i class="fas fa-smile text-xl text-white"></i>
+                    </div>
+                    <div class="flex-1">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="font-medium">今天</span>
+                            <span class="text-sm text-white/70">8.5分</span>
+                        </div>
+                        <p class="text-sm text-white/70">开心、平静</p>
+                        <p class="text-xs text-white/50 mt-1">工作顺利，心情很好</p>
+                    </div>
+                </div>
+                
+                <div id="record-2" class="flex items-center space-x-4 p-3 bg-white/5 rounded-xl">
+                    <div class="w-12 h-12 bg-gradient-to-br from-yellow-400 to-yellow-500 rounded-full flex items-center justify-center">
+                        <i class="fas fa-meh text-xl text-white"></i>
+                    </div>
+                    <div class="flex-1">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="font-medium">昨天</span>
+                            <span class="text-sm text-white/70">6.2分</span>
+                        </div>
+                        <p class="text-sm text-white/70">焦虑、疲惫</p>
+                        <p class="text-xs text-white/50 mt-1">加班到很晚，有点累</p>
+                    </div>
+                </div>
+                
+                <div id="record-3" class="flex items-center space-x-4 p-3 bg-white/5 rounded-xl">
+                    <div class="w-12 h-12 bg-gradient-to-br from-purple-400 to-purple-500 rounded-full flex items-center justify-center">
+                        <i class="fas fa-grin text-xl text-white"></i>
+                    </div>
+                    <div class="flex-1">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="font-medium">3月27日</span>
+                            <span class="text-sm text-white/70">9.0分</span>
+                        </div>
+                        <p class="text-sm text-white/70">兴奋、开心</p>
+                        <p class="text-xs text-white/50 mt-1">周末和朋友出去玩了</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- 情绪记录弹窗 -->
+    <div id="emotion-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="glass-card rounded-3xl p-6 w-full max-w-sm">
+                <h3 class="text-lg font-semibold mb-4 gradient-text">记录今日情绪</h3>
+                
+                <!-- 情绪评分 -->
+                <div class="mb-6">
+                    <label class="block text-sm font-medium mb-3 text-white/70">情绪指数</label>
+                    <div class="flex justify-center space-x-2 mb-3">
+                        <button class="mood-circle w-12 h-12 bg-white/20 rounded-full flex items-center justify-center" data-score="1">1</button>
+                        <button class="mood-circle w-12 h-12 bg-white/20 rounded-full flex items-center justify-center" data-score="2">2</button>
+                        <button class="mood-circle w-12 h-12 bg-white/20 rounded-full flex items-center justify-center" data-score="3">3</button>
+                        <button class="mood-circle w-12 h-12 bg-white/20 rounded-full flex items-center justify-center" data-score="4">4</button>
+                        <button class="mood-circle w-12 h-12 bg-white/20 rounded-full flex items-center justify-center" data-score="5">5</button>
+                        <button class="mood-circle w-12 h-12 bg-white/20 rounded-full flex items-center justify-center" data-score="6">6</button>
+                        <button class="mood-circle w-12 h-12 bg-white/20 rounded-full flex items-center justify-center" data-score="7">7</button>
+                        <button class="mood-circle w-12 h-12 bg-white/20 rounded-full flex items-center justify-center" data-score="8">8</button>
+                        <button class="mood-circle w-12 h-12 bg-white/20 rounded-full flex items-center justify-center" data-score="9">9</button>
+                        <button class="mood-circle w-12 h-12 bg-white/20 rounded-full flex items-center justify-center" data-score="10">10</button>
+                    </div>
+                    <div class="text-center">
+                        <span id="score-text" class="text-sm text-white/70">点击选择你的情绪指数</span>
+                    </div>
+                </div>
+                
+                <!-- 情绪标签 -->
+                <div class="mb-6">
+                    <label class="block text-sm font-medium mb-3 text-white/70">情绪标签</label>
+                    <div class="flex flex-wrap gap-2">
+                        <button class="emotion-tag px-3 py-1 bg-white/20 rounded-full text-sm" data-tag="开心">开心</button>
+                        <button class="emotion-tag px-3 py-1 bg-white/20 rounded-full text-sm" data-tag="平静">平静</button>
+                        <button class="emotion-tag px-3 py-1 bg-white/20 rounded-full text-sm" data-tag="焦虑">焦虑</button>
+                        <button class="emotion-tag px-3 py-1 bg-white/20 rounded-full text-sm" data-tag="兴奋">兴奋</button>
+                        <button class="emotion-tag px-3 py-1 bg-white/20 rounded-full text-sm" data-tag="疲惫">疲惫</button>
+                        <button class="emotion-tag px-3 py-1 bg-white/20 rounded-full text-sm" data-tag="专注">专注</button>
+                        <button class="emotion-tag px-3 py-1 bg-white/20 rounded-full text-sm" data-tag="紧张">紧张</button>
+                        <button class="emotion-tag px-3 py-1 bg-white/20 rounded-full text-sm" data-tag="放松">放松</button>
+                    </div>
+                </div>
+                
+                <!-- 情绪描述 -->
+                <div class="mb-6">
+                    <label for="emotion-description" class="block text-sm font-medium mb-3 text-white/70">描述一下今天的心情</label>
+                    <textarea id="emotion-description" rows="3" class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:border-white/40 resize-none" placeholder="今天发生了什么让你有这样的感受..."></textarea>
+                </div>
+                
+                <!-- 按钮 -->
+                <div class="flex space-x-3">
+                    <button id="cancel-record" class="flex-1 py-3 bg-white/20 rounded-xl font-medium hover:bg-white/30 transition-colors">取消</button>
+                    <button id="save-record" class="flex-1 py-3 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-xl font-medium hover:from-yellow-500 hover:to-orange-600 transition-colors">保存</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            let selectedScore = null;
+            let selectedTags = [];
+            
+            // 返回按钮点击事件
+            document.querySelector('#back-btn').addEventListener('click', function() {
+                window.location.href = 'P-HOME.html';
+            });
+            
+            // 记录今日情绪按钮点击事件
+            document.querySelector('#record-emotion-btn').addEventListener('click', function() {
+                document.querySelector('#emotion-modal').classList.remove('hidden');
+            });
+            
+            // 关闭弹窗
+            document.querySelector('#cancel-record').addEventListener('click', function() {
+                document.querySelector('#emotion-modal').classList.add('hidden');
+                resetForm();
+            });
+            
+            // 点击弹窗背景关闭
+            document.querySelector('#emotion-modal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.classList.add('hidden');
+                    resetForm();
+                }
+            });
+            
+            // 情绪评分选择
+            document.querySelectorAll('.mood-circle').forEach(button => {
+                button.addEventListener('click', function() {
+                    // 清除之前的选择
+                    document.querySelectorAll('.mood-circle').forEach(btn => {
+                        btn.classList.remove('bg-yellow-400', 'bg-gradient-to-br', 'from-yellow-400', 'to-orange-500');
+                        btn.classList.add('bg-white/20');
+                    });
+                    
+                    // 选择当前评分
+                    selectedScore = parseInt(this.dataset.score);
+                    this.classList.remove('bg-white/20');
+                    this.classList.add('bg-gradient-to-br', 'from-yellow-400', 'to-orange-500');
+                    
+                    // 更新评分文本
+                    const scoreTexts = ['', '很差', '较差', '不佳', '一般', '还行', '不错', '良好', '很好', '非常好', '极好'];
+                    document.querySelector('#score-text').textContent = `${selectedScore}分 - ${scoreTexts[selectedScore]}`;
+                });
+            });
+            
+            // 情绪标签选择
+            document.querySelectorAll('.emotion-tag').forEach(button => {
+                button.addEventListener('click', function() {
+                    const tag = this.dataset.tag;
+                    
+                    if (selectedTags.includes(tag)) {
+                        // 取消选择
+                        selectedTags = selectedTags.filter(t => t !== tag);
+                        this.classList.remove('bg-gradient-to-r', 'from-yellow-400', 'to-orange-500');
+                        this.classList.add('bg-white/20');
+                    } else {
+                        // 选择标签
+                        selectedTags.push(tag);
+                        this.classList.remove('bg-white/20');
+                        this.classList.add('bg-gradient-to-r', 'from-yellow-400', 'to-orange-500');
+                    }
+                });
+            });
+            
+            // 保存记录
+            document.querySelector('#save-record').addEventListener('click', function() {
+                if (!selectedScore) {
+                    alert('请选择情绪指数');
+                    return;
+                }
+                
+                if (selectedTags.length === 0) {
+                    alert('请选择至少一个情绪标签');
+                    return;
+                }
+                
+                const description = document.querySelector('#emotion-description').value.trim();
+                
+                // 模拟保存记录
+                console.log('保存情绪记录:', {
+                    score: selectedScore,
+                    tags: selectedTags,
+                    description: description,
+                    date: new Date().toISOString().split('T')[0]
+                });
+                
+                // 关闭弹窗
+                document.querySelector('#emotion-modal').classList.add('hidden');
+                
+                // 显示成功提示
+                alert('情绪记录保存成功！');
+                
+                // 重置表单
+                resetForm();
+                
+                // 这里可以添加更新页面数据的逻辑
+                updateEmotionData();
+            });
+            
+            // 重置表单
+            function resetForm() {
+                selectedScore = null;
+                selectedTags = [];
+                
+                // 重置评分选择
+                document.querySelectorAll('.mood-circle').forEach(btn => {
+                    btn.classList.remove('bg-yellow-400', 'bg-gradient-to-br', 'from-yellow-400', 'to-orange-500');
+                    btn.classList.add('bg-white/20');
+                });
+                
+                // 重置标签选择
+                document.querySelectorAll('.emotion-tag').forEach(btn => {
+                    btn.classList.remove('bg-gradient-to-r', 'from-yellow-400', 'to-orange-500');
+                    btn.classList.add('bg-white/20');
+                });
+                
+                // 重置文本
+                document.querySelector('#score-text').textContent = '点击选择你的情绪指数';
+                document.querySelector('#emotion-description').value = '';
+            }
+            
+            // 更新情绪数据（模拟）
+            function updateEmotionData() {
+                // 这里可以添加更新趋势图、日历、标签统计等数据的逻辑
+                console.log('更新情绪数据');
+            }
+            
+            // 月份导航
+            document.querySelector('#prev-month').addEventListener('click', function() {
+                console.log('切换到上个月');
+                // 这里可以添加月份切换逻辑
+            });
+            
+            document.querySelector('#next-month').addEventListener('click', function() {
+                console.log('切换到下个月');
+                // 这里可以添加月份切换逻辑
+            });
+            
+            // 视图切换
+            document.querySelector('#week-view').addEventListener('click', function() {
+                document.querySelector('#week-view').classList.add('bg-white/20');
+                document.querySelector('#week-view').classList.remove('text-white/70');
+                document.querySelector('#month-view').classList.remove('bg-white/20');
+                document.querySelector('#month-view').classList.add('text-white/70');
+                console.log('切换到周视图');
+            });
+            
+            document.querySelector('#month-view').addEventListener('click', function() {
+                document.querySelector('#month-view').classList.add('bg-white/20');
+                document.querySelector('#month-view').classList.remove('text-white/70');
+                document.querySelector('#week-view').classList.remove('bg-white/20');
+                document.querySelector('#week-view').classList.add('text-white/70');
+                console.log('切换到月视图');
+            });
+            
+            // 查看全部记录
+            document.querySelector('#view-all-records').addEventListener('click', function() {
+                console.log('查看全部记录');
+                // 这里可以添加跳转到完整记录页面的逻辑
+            });
+            
+            // 日历日期点击
+            document.querySelectorAll('.calendar-day').forEach(day => {
+                day.addEventListener('click', function() {
+                    const date = this.textContent;
+                    console.log('查看日期:', date);
+                    // 这里可以添加查看该日情绪详情的逻辑
+                });
+            });
+            
+            // 最近记录点击
+            document.querySelectorAll('[id^="record-"]').forEach(record => {
+                record.addEventListener('click', function() {
+                    const recordId = this.id;
+                    console.log('查看记录详情:', recordId);
+                    // 这里可以添加查看记录详情的逻辑
+                });
+            });
+            
+            // 添加页面加载动画
+            const cards = document.querySelectorAll('.glass-card');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                setTimeout(() => {
+                    card.style.transition = 'all 0.6s ease';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+        });
+    </script>
+</body>
+</html>

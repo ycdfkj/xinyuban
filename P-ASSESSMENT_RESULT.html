@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>心愈伴 - 测评结果</title>
+    <script src="https://unpkg.byted-static.com/coze/space_ppt_lib/1.0.3-alpha.12/lib/tailwindcss.js"></script>
+    <script src="https://unpkg.byted-static.com/fortawesome/fontawesome-free/6.7.2/js/all.min.js" data-auto-replace-svg="nest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#6366f1',
+                        secondary: '#8b5cf6',
+                        tertiary: '#06b6d4',
+                        success: '#10b981',
+                        danger: '#ef4444',
+                        warning: '#f59e0b',
+                        info: '#3b82f6',
+                        'glass-bg': 'rgba(255, 255, 255, 0.1)',
+                        'glass-border': 'rgba(255, 255, 255, 0.2)',
+                        'dark-glass': 'rgba(0, 0, 0, 0.1)',
+                    },
+                    backdropBlur: {
+                        'xs': '2px',
+                    },
+                    boxShadow: {
+                        'glass': '0 8px 32px 0 rgba(31, 38, 135, 0.37)',
+                        'glass-inset': 'inset 0 1px 0 0 rgba(255, 255, 255, 0.05)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        }
+        
+        .glass-button {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .glass-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.4);
+        }
+        
+        .gradient-text {
+            background: linear-gradient(45deg, #ffffff, #e5e7eb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .score-circle {
+            background: conic-gradient(from 0deg, #10b981 0deg, #10b981 295.2deg, rgba(255, 255, 255, 0.1) 295.2deg);
+            border-radius: 50%;
+            position: relative;
+        }
+        
+        .score-circle::before {
+            content: '';
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            bottom: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 50%;
+        }
+        
+        .loading-spinner {
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.6s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="font-sans text-white overflow-x-hidden">
+    <!-- iOS状态栏 -->
+    <div id="status-bar" class="flex justify-between items-center px-6 py-2 text-sm font-medium">
+        <div class="flex items-center space-x-1">
+            <span>9:41</span>
+        </div>
+        <div class="flex items-center space-x-1">
+            <i class="fas fa-signal text-xs"></i>
+            <i class="fas fa-wifi text-xs"></i>
+            <div class="w-6 h-3 border border-white rounded-sm">
+                <div class="w-4 h-1.5 bg-white rounded-sm m-0.5"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 主要内容区域 -->
+    <div id="main-content" class="px-4 pb-6">
+        <!-- 顶部导航栏 -->
+        <header id="top-nav" class="flex justify-between items-center py-4 mb-6">
+            <button id="back-btn" class="flex items-center space-x-2 glass-button rounded-full px-4 py-2">
+                <i class="fas fa-arrow-left"></i>
+                <span>返回</span>
+            </button>
+            <h1 id="page-title" class="text-lg font-semibold gradient-text">测评结果</h1>
+            <div class="w-20"></div> <!-- 占位元素保持标题居中 -->
+        </header>
+
+        <!-- 加载状态 -->
+        <div id="loading-state" class="text-center py-12">
+            <div class="w-16 h-16 mx-auto mb-4 border-4 border-white/30 border-t-white rounded-full loading-spinner"></div>
+            <p class="text-white/70">正在计算您的测评结果...</p>
+        </div>
+
+        <!-- 测评结果内容 -->
+        <div id="result-content" class="hidden space-y-6">
+            <!-- 测评基本信息 -->
+            <section id="assessment-info" class="glass-card rounded-3xl p-6 fade-in">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 id="scale-name" class="text-xl font-bold gradient-text">抑郁自评量表 (SDS)</h2>
+                    <div class="w-12 h-12 bg-gradient-to-br from-blue-400 to-blue-600 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-chart-line text-xl text-white"></i>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4 text-sm text-white/70">
+                    <div class="flex items-center space-x-2">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span id="assessment-date">2024年1月15日</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <i class="fas fa-clock"></i>
+                        <span id="assessment-time">14:30</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 测评分数展示 -->
+            <section id="score-display" class="glass-card rounded-3xl p-6 fade-in">
+                <h3 class="text-lg font-semibold mb-6 gradient-text text-center">您的测评分数</h3>
+                <div class="flex items-center justify-center space-x-8">
+                    <div class="score-circle w-32 h-32 flex items-center justify-center">
+                        <div class="text-center z-10">
+                            <p id="score-value" class="text-3xl font-bold text-white">42</p>
+                            <p class="text-sm text-white/70">标准分</p>
+                        </div>
+                    </div>
+                    <div class="text-left">
+                        <div class="mb-3">
+                            <p class="text-sm text-white/70 mb-1">测评结果</p>
+                            <p id="result-level" class="text-xl font-semibold text-success">正常范围</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-white/70 mb-1">建议</p>
+                            <p id="result-suggestion" class="text-sm text-white">保持良好状态</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 测评结果分析 -->
+            <section id="result-analysis" class="glass-card rounded-3xl p-6 fade-in">
+                <h3 class="text-lg font-semibold mb-4 gradient-text">测评结果分析</h3>
+                <div id="analysis-content" class="space-y-4 text-white/90">
+                    <p class="leading-relaxed">
+                        根据您的测评结果，您目前的心理状态处于正常范围。您在情绪调节、生活兴趣等方面表现良好，建议继续保持现有的生活方式和心态。
+                    </p>
+                    <div class="bg-white/10 rounded-xl p-4">
+                        <h4 class="font-semibold mb-2 text-white">优势表现</h4>
+                        <ul class="space-y-1 text-sm text-white/80">
+                            <li class="flex items-center space-x-2">
+                                <i class="fas fa-check-circle text-success"></i>
+                                <span>对生活保持积极的态度</span>
+                            </li>
+                            <li class="flex items-center space-x-2">
+                                <i class="fas fa-check-circle text-success"></i>
+                                <span>具备良好的情绪调节能力</span>
+                            </li>
+                            <li class="flex items-center space-x-2">
+                                <i class="fas fa-check-circle text-success"></i>
+                                <span>能够享受日常活动的乐趣</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 建议与指导 -->
+            <section id="recommendations" class="glass-card rounded-3xl p-6 fade-in">
+                <h3 class="text-lg font-semibold mb-4 gradient-text">给您的建议</h3>
+                <div class="space-y-4">
+                    <div class="flex items-start space-x-3">
+                        <div class="w-8 h-8 bg-success/20 rounded-lg flex items-center justify-center mt-1">
+                            <i class="fas fa-heart text-success text-sm"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold mb-1 text-white">保持积极心态</h4>
+                            <p class="text-sm text-white/80">继续保持对生活的热情和积极态度，这是您心理健康的重要基石。</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start space-x-3">
+                        <div class="w-8 h-8 bg-info/20 rounded-lg flex items-center justify-center mt-1">
+                            <i class="fas fa-dumbbell text-info text-sm"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold mb-1 text-white">坚持健康生活方式</h4>
+                            <p class="text-sm text-white/80">保持规律的作息时间，适当运动，有助于维持良好的心理状态。</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start space-x-3">
+                        <div class="w-8 h-8 bg-warning/20 rounded-lg flex items-center justify-center mt-1">
+                            <i class="fas fa-users text-warning text-sm"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold mb-1 text-white">维护良好人际关系</h4>
+                            <p class="text-sm text-white/80">与亲友保持良好的沟通和联系，获得情感支持。</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 行动按钮 -->
+            <section id="action-buttons" class="space-y-3 fade-in">
+                <button id="view-history-btn" class="w-full glass-button rounded-2xl py-4 text-center font-semibold">
+                    <i class="fas fa-history mr-2"></i>
+                    查看测评历史
+                </button>
+                <button id="share-result-btn" class="w-full glass-button rounded-2xl py-4 text-center font-semibold">
+                    <i class="fas fa-share-alt mr-2"></i>
+                    分享测评结果
+                </button>
+            </section>
+        </div>
+
+        <!-- 历史测评列表 -->
+        <div id="history-content" class="hidden space-y-6">
+            <section id="history-header" class="glass-card rounded-3xl p-6">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-xl font-bold gradient-text">我的测评历史</h2>
+                    <div class="w-12 h-12 bg-gradient-to-br from-purple-400 to-purple-600 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-history text-xl text-white"></i>
+                    </div>
+                </div>
+            </section>
+
+            <section id="history-list" class="space-y-4">
+                <div class="history-item glass-card rounded-2xl p-4 cursor-pointer hover:scale-105 transition-transform" data-assessment-id="assess001">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-4">
+                            <div class="w-12 h-12 bg-gradient-to-br from-blue-400 to-blue-600 rounded-xl flex items-center justify-center">
+                                <i class="fas fa-chart-line text-xl text-white"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-white">抑郁自评量表 (SDS)</h3>
+                                <p class="text-sm text-white/70">2024年1月15日 · 14:30</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-lg font-bold text-success">42分</p>
+                            <p class="text-xs text-white/70">正常范围</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="history-item glass-card rounded-2xl p-4 cursor-pointer hover:scale-105 transition-transform" data-assessment-id="assess002">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-4">
+                            <div class="w-12 h-12 bg-gradient-to-br from-green-400 to-green-600 rounded-xl flex items-center justify-center">
+                                <i class="fas fa-brain text-xl text-white"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-white">焦虑自评量表 (SAS)</h3>
+                                <p class="text-sm text-white/70">2024年1月10日 · 16:45</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-lg font-bold text-warning">58分</p>
+                            <p class="text-xs text-white/70">轻度焦虑</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="history-item glass-card rounded-2xl p-4 cursor-pointer hover:scale-105 transition-transform" data-assessment-id="assess003">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-4">
+                            <div class="w-12 h-12 bg-gradient-to-br from-indigo-400 to-indigo-600 rounded-xl flex items-center justify-center">
+                                <i class="fas fa-moon text-xl text-white"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-white">睡眠质量量表 (PSQI)</h3>
+                                <p class="text-sm text-white/70">2024年1月5日 · 21:20</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-lg font-bold text-success">65分</p>
+                            <p class="text-xs text-white/70">良好</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 解析URL参数的辅助函数
+            function getUrlParams() {
+                const params = {};
+                const queryString = window.location.search.substring(1);
+                const urlParams = new URLSearchParams(queryString);
+                
+                for(const [key, value] of urlParams.entries()) {
+                    params[key] = value;
+                }
+                return params;
+            }
+
+            // 获取URL参数
+            const params = getUrlParams();
+            
+            // 模拟测评结果数据
+            const mockAssessmentResults = {
+                "assess001": {
+                    scaleName: "抑郁自评量表 (SDS)",
+                    date: "2024年1月15日",
+                    time: "14:30",
+                    score: 42,
+                    level: "正常范围",
+                    suggestion: "保持良好状态",
+                    levelColor: "text-success",
+                    analysis: "根据您的测评结果，您目前的心理状态处于正常范围。您在情绪调节、生活兴趣等方面表现良好，建议继续保持现有的生活方式和心态。",
+                    strengths: [
+                        "对生活保持积极的态度",
+                        "具备良好的情绪调节能力",
+                        "能够享受日常活动的乐趣"
+                    ]
+                },
+                "assess002": {
+                    scaleName: "焦虑自评量表 (SAS)",
+                    date: "2024年1月10日",
+                    time: "16:45",
+                    score: 58,
+                    level: "轻度焦虑",
+                    suggestion: "适当放松调节",
+                    levelColor: "text-warning",
+                    analysis: "您的测评结果显示存在轻度焦虑症状。这在现代生活中较为常见，通常与工作压力、生活节奏等因素有关。",
+                    strengths: [
+                        "能够意识到自身的情绪变化",
+                        "具备一定的应对压力的能力",
+                        "有寻求帮助的意识"
+                    ]
+                },
+                "assess003": {
+                    scaleName: "睡眠质量量表 (PSQI)",
+                    date: "2024年1月5日",
+                    time: "21:20",
+                    score: 65,
+                    level: "良好",
+                    suggestion: "保持规律作息",
+                    levelColor: "text-success",
+                    analysis: "您的睡眠质量整体良好。规律的作息时间和健康的生活习惯有助于维持良好的睡眠质量。",
+                    strengths: [
+                        "保持规律的作息时间",
+                        "具备良好的睡眠卫生习惯",
+                        "能够快速入睡"
+                    ]
+                }
+            };
+
+            // 渲染测评结果
+            function renderAssessmentResult(assessmentId) {
+                const result = mockAssessmentResults[assessmentId];
+                if (!result) {
+                    console.error('未找到测评结果:', assessmentId);
+                    return;
+                }
+
+                // 更新基本信息
+                document.querySelector('#scale-name').textContent = result.scaleName;
+                document.querySelector('#assessment-date').textContent = result.date;
+                document.querySelector('#assessment-time').textContent = result.time;
+
+                // 更新分数显示
+                document.querySelector('#score-value').textContent = result.score;
+                document.querySelector('#result-level').textContent = result.level;
+                document.querySelector('#result-level').className = `text-xl font-semibold ${result.levelColor}`;
+                document.querySelector('#result-suggestion').textContent = result.suggestion;
+
+                // 更新分析内容
+                document.querySelector('#analysis-content p').textContent = result.analysis;
+                
+                // 更新优势表现
+                const strengthsList = document.querySelector('#analysis-content ul');
+                strengthsList.innerHTML = '';
+                result.strengths.forEach(strength => {
+                    const li = document.createElement('li');
+                    li.className = 'flex items-center space-x-2';
+                    li.innerHTML = `
+                        <i class="fas fa-check-circle text-success"></i>
+                        <span>${strength}</span>
+                    `;
+                    strengthsList.appendChild(li);
+                });
+
+                // 更新分数圆环
+                const scoreCircle = document.querySelector('.score-circle');
+                const percentage = (result.score / 100) * 360;
+                scoreCircle.style.background = `conic-gradient(from 0deg, #10b981 0deg, #10b981 ${percentage}deg, rgba(255, 255, 255, 0.1) ${percentage}deg)`;
+            }
+
+            // 显示历史测评列表
+            function showHistoryList() {
+                document.querySelector('#page-title').textContent = '测评历史';
+                document.querySelector('#loading-state').classList.add('hidden');
+                document.querySelector('#result-content').classList.add('hidden');
+                document.querySelector('#history-content').classList.remove('hidden');
+            }
+
+            // 显示测评结果
+            function showAssessmentResult(assessmentId) {
+                document.querySelector('#page-title').textContent = '测评结果';
+                document.querySelector('#loading-state').classList.add('hidden');
+                document.querySelector('#history-content').classList.add('hidden');
+                
+                // 模拟加载延迟
+                setTimeout(() => {
+                    renderAssessmentResult(assessmentId);
+                    document.querySelector('#result-content').classList.remove('hidden');
+                }, 1500);
+            }
+
+            // 初始化页面
+            if (params.assessmentId) {
+                // 从测评题目页进入，显示具体测评结果
+                showAssessmentResult(params.assessmentId);
+            } else if (params.userId) {
+                // 从心理测评页的历史入口进入，显示历史列表
+                showHistoryList();
+            } else {
+                // 默认显示历史列表
+                showHistoryList();
+            }
+
+            // 返回按钮点击事件
+            document.querySelector('#back-btn').addEventListener('click', function() {
+                window.location.href = 'P-ASSESSMENT.html';
+            });
+
+            // 查看测评历史按钮点击事件
+            document.querySelector('#view-history-btn').addEventListener('click', function() {
+                window.location.href = 'P-ASSESSMENT_RESULT.html?userId=current';
+            });
+
+            // 分享测评结果按钮点击事件
+            document.querySelector('#share-result-btn').addEventListener('click', function() {
+                console.log('分享测评结果功能需要调用第三方接口实现');
+                // 注释：此功能需要调用系统分享API，在原型阶段仅做UI展示
+                alert('分享功能暂未开放');
+            });
+
+            // 历史测评项点击事件
+            document.querySelectorAll('.history-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    const assessmentId = this.dataset.assessmentId;
+                    window.location.href = `P-ASSESSMENT_RESULT.html?assessmentId=${assessmentId}`;
+                });
+            });
+
+            // 添加页面加载动画
+            const cards = document.querySelectorAll('.glass-card');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                setTimeout(() => {
+                    card.style.transition = 'all 0.6s ease';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+        });
+    </script>
+</body>
+</html>

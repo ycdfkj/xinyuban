@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>心愈伴 - 历史记录</title>
+    <script src="https://unpkg.byted-static.com/coze/space_ppt_lib/1.0.3-alpha.12/lib/tailwindcss.js"></script>
+    <script src="https://unpkg.byted-static.com/fortawesome/fontawesome-free/6.7.2/js/all.min.js" data-auto-replace-svg="nest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#6366f1',
+                        secondary: '#8b5cf6',
+                        tertiary: '#06b6d4',
+                        success: '#10b981',
+                        danger: '#ef4444',
+                        warning: '#f59e0b',
+                        info: '#3b82f6',
+                        'glass-bg': 'rgba(255, 255, 255, 0.1)',
+                        'glass-border': 'rgba(255, 255, 255, 0.2)',
+                        'dark-glass': 'rgba(0, 0, 0, 0.1)',
+                    },
+                    backdropBlur: {
+                        'xs': '2px',
+                    },
+                    boxShadow: {
+                        'glass': '0 8px 32px 0 rgba(31, 38, 135, 0.37)',
+                        'glass-inset': 'inset 0 1px 0 0 rgba(255, 255, 255, 0.05)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        }
+        
+        .glass-button {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .glass-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.4);
+        }
+        
+        .gradient-text {
+            background: linear-gradient(45deg, #ffffff, #e5e7eb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .filter-active {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+        
+        .loading-skeleton {
+            background: linear-gradient(90deg, rgba(255,255,255,0.1) 25%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0.1) 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+        }
+        
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="font-sans text-white overflow-x-hidden">
+    <!-- iOS状态栏 -->
+    <div id="status-bar" class="flex justify-between items-center px-6 py-2 text-sm font-medium">
+        <div class="flex items-center space-x-1">
+            <span>9:41</span>
+        </div>
+        <div class="flex items-center space-x-1">
+            <i class="fas fa-signal text-xs"></i>
+            <i class="fas fa-wifi text-xs"></i>
+            <div class="w-6 h-3 border border-white rounded-sm">
+                <div class="w-4 h-1.5 bg-white rounded-sm m-0.5"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 主要内容区域 -->
+    <div id="main-content" class="px-4 pb-6">
+        <!-- 顶部导航栏 -->
+        <header id="top-nav" class="flex items-center py-4 mb-6">
+            <button id="back-btn" class="p-2 glass-button rounded-full mr-4">
+                <i class="fas fa-arrow-left text-lg"></i>
+            </button>
+            <h1 id="page-title" class="text-xl font-bold gradient-text">历史记录</h1>
+        </header>
+
+        <!-- 筛选和排序区域 -->
+        <section id="filter-section" class="mb-6">
+            <div class="flex space-x-3 mb-4">
+                <button id="filter-all" class="px-4 py-2 glass-button rounded-full text-sm font-medium filter-active">
+                    全部
+                </button>
+                <button id="filter-counseling" class="px-4 py-2 glass-button rounded-full text-sm font-medium">
+                    心理咨询
+                </button>
+                <button id="filter-companionship" class="px-4 py-2 glass-button rounded-full text-sm font-medium">
+                    情感陪伴
+                </button>
+            </div>
+            
+            <div class="flex justify-between items-center">
+                <span class="text-sm text-white/70">共 <span id="total-count">12</span> 条记录</span>
+                <button id="sort-btn" class="flex items-center space-x-2 px-3 py-2 glass-button rounded-lg text-sm">
+                    <i class="fas fa-sort text-sm"></i>
+                    <span>时间排序</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- 历史记录列表 -->
+        <section id="history-list" class="space-y-4">
+            <!-- 加载状态 -->
+            <div id="loading-skeleton" class="hidden">
+                <div class="glass-card rounded-2xl p-4 mb-4 loading-skeleton">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-12 h-12 rounded-xl"></div>
+                        <div class="flex-1">
+                            <div class="h-4 mb-2 rounded"></div>
+                            <div class="h-3 rounded"></div>
+                        </div>
+                        <div class="w-16 h-4 rounded"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 空状态 -->
+            <div id="empty-state" class="hidden text-center py-12">
+                <div class="w-24 h-24 mx-auto mb-4 bg-gradient-to-br from-gray-400 to-gray-500 rounded-full flex items-center justify-center">
+                    <i class="fas fa-history text-3xl text-white"></i>
+                </div>
+                <h3 class="text-lg font-semibold mb-2">暂无记录</h3>
+                <p class="text-sm text-white/70">开始你的第一次心理咨询或情感陪伴吧</p>
+            </div>
+
+            <!-- 历史记录项 -->
+            <div id="history-item-1" class="glass-card rounded-2xl p-4 cursor-pointer hover:scale-105 transition-transform fade-in" data-type="counseling" data-conversation-id="conv_001">
+                <div class="flex items-center space-x-4">
+                    <div class="w-12 h-12 bg-gradient-to-br from-blue-400 to-blue-600 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-user-md text-xl text-white"></i>
+                    </div>
+                    <div class="flex-1">
+                        <div class="flex items-center justify-between mb-1">
+                            <h3 class="font-semibold">心理咨询</h3>
+                            <span class="text-sm text-white/70">25分钟</span>
+                        </div>
+                        <p class="text-sm text-white/70 mb-1">情绪管理 · 压力缓解</p>
+                        <p class="text-xs text-white/50">今天 14:30</p>
+                    </div>
+                    <i class="fas fa-chevron-right text-white/50"></i>
+                </div>
+            </div>
+
+            <div id="history-item-2" class="glass-card rounded-2xl p-4 cursor-pointer hover:scale-105 transition-transform fade-in" data-type="companionship" data-conversation-id="conv_002">
+                <div class="flex items-center space-x-4">
+                    <div class="w-12 h-12 bg-gradient-to-br from-pink-400 to-pink-600 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-heart text-xl text-white"></i>
+                    </div>
+                    <div class="flex-1">
+                        <div class="flex items-center justify-between mb-1">
+                            <h3 class="font-semibold">情感陪伴</h3>
+                            <span class="text-sm text-white/70">42分钟</span>
+                        </div>
+                        <p class="text-sm text-white/70 mb-1">日常聊天 · 情绪支持</p>
+                        <p class="text-xs text-white/50">今天 09:15</p>
+                    </div>
+                    <i class="fas fa-chevron-right text-white/50"></i>
+                </div>
+            </div>
+
+            <div id="history-item-3" class="glass-card rounded-2xl p-4 cursor-pointer hover:scale-105 transition-transform fade-in" data-type="counseling" data-conversation-id="conv_003">
+                <div class="flex items-center space-x-4">
+                    <div class="w-12 h-12 bg-gradient-to-br from-blue-400 to-blue-600 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-user-md text-xl text-white"></i>
+                    </div>
+                    <div class="flex-1">
+                        <div class="flex items-center justify-between mb-1">
+                            <h3 class="font-semibold">心理咨询</h3>
+                            <span class="text-sm text-white/70">38分钟</span>
+                        </div>
+                        <p class="text-sm text-white/70 mb-1">恋爱心理 · 关系问题</p>
+                        <p class="text-xs text-white/50">昨天 20:45</p>
+                    </div>
+                    <i class="fas fa-chevron-right text-white/50"></i>
+                </div>
+            </div>
+
+            <div id="history-item-4" class="glass-card rounded-2xl p-4 cursor-pointer hover:scale-105 transition-transform fade-in" data-type="companionship" data-conversation-id="conv_004">
+                <div class="flex items-center space-x-4">
+                    <div class="w-12 h-12 bg-gradient-to-br from-pink-400 to-pink-600 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-heart text-xl text-white"></i>
+                    </div>
+                    <div class="flex-1">
+                        <div class="flex items-center justify-between mb-1">
+                            <h3 class="font-semibold">情感陪伴</h3>
+                            <span class="text-sm text-white/70">19分钟</span>
+                        </div>
+                        <p class="text-sm text-white/70 mb-1">睡前放松 · 冥想指导</p>
+                        <p class="text-xs text-white/50">昨天 22:10</p>
+                    </div>
+                    <i class="fas fa-chevron-right text-white/50"></i>
+                </div>
+            </div>
+
+            <div id="history-item-5" class="glass-card rounded-2xl p-4 cursor-pointer hover:scale-105 transition-transform fade-in" data-type="counseling" data-conversation-id="conv_005">
+                <div class="flex items-center space-x-4">
+                    <div class="w-12 h-12 bg-gradient-to-br from-blue-400 to-blue-600 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-user-md text-xl text-white"></i>
+                    </div>
+                    <div class="flex-1">
+                        <div class="flex items-center justify-between mb-1">
+                            <h3 class="font-semibold">心理咨询</h3>
+                            <span class="text-sm text-white/70">31分钟</span>
+                        </div>
+                        <p class="text-sm text-white/70 mb-1">职业发展 · 工作压力</p>
+                        <p class="text-xs text-white/50">2天前 16:20</p>
+                    </div>
+                    <i class="fas fa-chevron-right text-white/50"></i>
+                </div>
+            </div>
+
+            <div id="history-item-6" class="glass-card rounded-2xl p-4 cursor-pointer hover:scale-105 transition-transform fade-in" data-type="companionship" data-conversation-id="conv_006">
+                <div class="flex items-center space-x-4">
+                    <div class="w-12 h-12 bg-gradient-to-br from-pink-400 to-pink-600 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-heart text-xl text-white"></i>
+                    </div>
+                    <div class="flex-1">
+                        <div class="flex items-center justify-between mb-1">
+                            <h3 class="font-semibold">情感陪伴</h3>
+                            <span class="text-sm text-white/70">28分钟</span>
+                        </div>
+                        <p class="text-sm text-white/70 mb-1">日常分享 · 情绪支持</p>
+                        <p class="text-xs text-white/50">3天前 11:30</p>
+                    </div>
+                    <i class="fas fa-chevron-right text-white/50"></i>
+                </div>
+            </div>
+        </section>
+
+        <!-- 加载更多 -->
+        <div id="load-more-section" class="text-center mt-6">
+            <button id="load-more-btn" class="px-6 py-3 glass-button rounded-full text-sm font-medium">
+                <i class="fas fa-chevron-down mr-2"></i>
+                加载更多
+            </button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 获取URL参数的辅助函数
+            function getUrlParams() {
+                const params = {};
+                const queryString = window.location.search.substring(1);
+                const urlParams = new URLSearchParams(queryString);
+                
+                for(const [key, value] of urlParams.entries()) {
+                    params[key] = value;
+                }
+                return params;
+            }
+
+            // 获取URL参数
+            const params = getUrlParams();
+            const fromPage = params.from || 'personal_center'; // 默认为从个人中心进入
+
+            // 返回按钮点击事件
+            document.querySelector('#back-btn').addEventListener('click', function() {
+                if (fromPage === 'counseling') {
+                    window.location.href = 'P-COUNSELING.html';
+                } else {
+                    window.location.href = 'P-PERSONAL_CENTER.html';
+                }
+            });
+
+            // 筛选按钮点击事件
+            const filterButtons = document.querySelectorAll('[id^="filter-"]');
+            filterButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // 移除所有按钮的active状态
+                    filterButtons.forEach(btn => btn.classList.remove('filter-active'));
+                    // 添加当前按钮的active状态
+                    this.classList.add('filter-active');
+                    
+                    // 筛选逻辑
+                    const filterType = this.id.replace('filter-', '');
+                    filterHistoryItems(filterType);
+                });
+            });
+
+            // 排序按钮点击事件
+            document.querySelector('#sort-btn').addEventListener('click', function() {
+                // 这里可以实现排序逻辑，目前只是切换图标
+                const icon = this.querySelector('i');
+                if (icon.classList.contains('fa-sort')) {
+                    icon.classList.remove('fa-sort');
+                    icon.classList.add('fa-sort-down');
+                    this.querySelector('span').textContent = '按时间倒序';
+                } else {
+                    icon.classList.remove('fa-sort-down');
+                    icon.classList.add('fa-sort-up');
+                    this.querySelector('span').textContent = '按时间正序';
+                }
+            });
+
+            // 历史记录项点击事件
+            const historyItems = document.querySelectorAll('[id^="history-item-"]');
+            historyItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    const conversationId = this.dataset.conversationId;
+                    const type = this.dataset.type;
+                    
+                    if (type === 'counseling') {
+                        window.location.href = `P-COUNSELING.html?conversationId=${conversationId}&mode=history`;
+                    } else {
+                        window.location.href = `P-COMPANIONSHIP.html?conversationId=${conversationId}&mode=history`;
+                    }
+                });
+            });
+
+            // 加载更多按钮点击事件
+            document.querySelector('#load-more-btn').addEventListener('click', function() {
+                showLoading();
+                // 模拟加载更多数据
+                setTimeout(() => {
+                    hideLoading();
+                    // 这里可以添加更多历史记录项
+                    console.log('加载更多历史记录');
+                }, 1000);
+            });
+
+            // 筛选历史记录项
+            function filterHistoryItems(type) {
+                const historyItems = document.querySelectorAll('[id^="history-item-"]');
+                let visibleCount = 0;
+                
+                historyItems.forEach(item => {
+                    if (type === 'all' || item.dataset.type === type) {
+                        item.style.display = 'block';
+                        visibleCount++;
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+                
+                // 更新总数显示
+                document.querySelector('#total-count').textContent = visibleCount;
+                
+                // 显示/隐藏空状态
+                if (visibleCount === 0) {
+                    document.querySelector('#empty-state').classList.remove('hidden');
+                } else {
+                    document.querySelector('#empty-state').classList.add('hidden');
+                }
+            }
+
+            // 显示加载状态
+            function showLoading() {
+                document.querySelector('#loading-skeleton').classList.remove('hidden');
+                document.querySelector('#load-more-btn').style.display = 'none';
+            }
+
+            // 隐藏加载状态
+            function hideLoading() {
+                document.querySelector('#loading-skeleton').classList.add('hidden');
+                document.querySelector('#load-more-btn').style.display = 'inline-flex';
+            }
+
+            // 页面加载动画
+            setTimeout(() => {
+                const items = document.querySelectorAll('.fade-in');
+                items.forEach((item, index) => {
+                    item.style.opacity = '0';
+                    item.style.transform = 'translateY(20px)';
+                    setTimeout(() => {
+                        item.style.transition = 'all 0.6s ease';
+                        item.style.opacity = '1';
+                        item.style.transform = 'translateY(0)';
+                    }, index * 100);
+                });
+            }, 100);
+        });
+    </script>
+</body>
+</html>

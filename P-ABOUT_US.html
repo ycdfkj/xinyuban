@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>心愈伴 - 关于我们</title>
+    <script src="https://unpkg.byted-static.com/coze/space_ppt_lib/1.0.3-alpha.12/lib/tailwindcss.js"></script>
+    <script src="https://unpkg.byted-static.com/fortawesome/fontawesome-free/6.7.2/js/all.min.js" data-auto-replace-svg="nest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#6366f1',
+                        secondary: '#8b5cf6',
+                        tertiary: '#06b6d4',
+                        success: '#10b981',
+                        danger: '#ef4444',
+                        warning: '#f59e0b',
+                        info: '#3b82f6',
+                        'glass-bg': 'rgba(255, 255, 255, 0.1)',
+                        'glass-border': 'rgba(255, 255, 255, 0.2)',
+                        'dark-glass': 'rgba(0, 0, 0, 0.1)',
+                    },
+                    backdropBlur: {
+                        'xs': '2px',
+                    },
+                    boxShadow: {
+                        'glass': '0 8px 32px 0 rgba(31, 38, 135, 0.37)',
+                        'glass-inset': 'inset 0 1px 0 0 rgba(255, 255, 255, 0.05)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        }
+        
+        .glass-button {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .glass-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.4);
+        }
+        
+        .gradient-text {
+            background: linear-gradient(45deg, #ffffff, #e5e7eb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .floating-animation {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .contact-item {
+            transition: all 0.3s ease;
+        }
+        
+        .contact-item:hover {
+            transform: translateX(10px);
+        }
+        
+        .link-item {
+            transition: all 0.3s ease;
+        }
+        
+        .link-item:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body class="font-sans text-white overflow-x-hidden">
+    <!-- iOS状态栏 -->
+    <div id="status-bar" class="flex justify-between items-center px-6 py-2 text-sm font-medium">
+        <div class="flex items-center space-x-1">
+            <span>9:41</span>
+        </div>
+        <div class="flex items-center space-x-1">
+            <i class="fas fa-signal text-xs"></i>
+            <i class="fas fa-wifi text-xs"></i>
+            <div class="w-6 h-3 border border-white rounded-sm">
+                <div class="w-4 h-1.5 bg-white rounded-sm m-0.5"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 主要内容区域 -->
+    <div id="main-content" class="px-4 pb-8">
+        <!-- 顶部导航栏 -->
+        <header id="top-nav" class="flex items-center py-4 mb-6">
+            <button id="back-btn" class="mr-4 p-2 glass-button rounded-full hover:scale-105 transition-transform">
+                <i class="fas fa-arrow-left text-lg"></i>
+            </button>
+            <h1 id="page-title" class="text-xl font-semibold gradient-text">关于我们</h1>
+        </header>
+
+        <!-- 应用信息卡片 -->
+        <section id="app-info" class="glass-card rounded-3xl p-6 mb-6 floating-animation">
+            <div class="text-center mb-6">
+                <div id="app-logo" class="w-24 h-24 mx-auto mb-4 bg-gradient-to-br from-primary to-secondary rounded-3xl flex items-center justify-center">
+                    <i class="fas fa-heart text-4xl text-white"></i>
+                </div>
+                <h2 id="app-name" class="text-2xl font-bold gradient-text mb-2">心愈伴</h2>
+                <p id="app-slogan" class="text-white/70">您的贴心心理健康伙伴</p>
+            </div>
+            
+            <div id="version-info" class="text-center">
+                <p class="text-white/70 mb-1">当前版本</p>
+                <p id="version-number" class="text-lg font-semibold gradient-text">v1.0.0</p>
+            </div>
+        </section>
+
+        <!-- 公司简介 -->
+        <section id="company-intro" class="glass-card rounded-3xl p-6 mb-6">
+            <h3 id="intro-title" class="text-lg font-semibold mb-4 gradient-text">公司简介</h3>
+            <div id="intro-content" class="space-y-4">
+                <p class="text-white/80 leading-relaxed">
+                    心愈伴致力于通过人工智能技术和专业心理知识，为用户提供个性化、即时的心理支持和情感慰藉服务。我们的使命是让每个人都能随时随地获得专业、温暖的心理帮助，促进心理健康和情感福祉。
+                </p>
+                <p class="text-white/80 leading-relaxed">
+                    我们拥有专业的心理学团队和先进的AI技术，为用户打造安全、私密、高效的心理健康服务平台。无论是日常的情绪管理，还是专业的心理咨询，心愈伴都能为您提供最贴心的陪伴和支持。
+                </p>
+            </div>
+        </section>
+
+        <!-- 联系方式 -->
+        <section id="contact-info" class="glass-card rounded-3xl p-6 mb-6">
+            <h3 id="contact-title" class="text-lg font-semibold mb-4 gradient-text">联系我们</h3>
+            <div id="contact-list" class="space-y-3">
+                <button id="email-contact" class="w-full contact-item glass-button rounded-2xl p-4 flex items-center space-x-4 text-left">
+                    <div class="w-12 h-12 bg-gradient-to-br from-blue-400 to-blue-600 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-envelope text-xl text-white"></i>
+                    </div>
+                    <div class="flex-1">
+                        <h4 class="font-semibold mb-1">客服邮箱</h4>
+                        <p id="contact-email" class="text-white/70">support@xinyuban.com</p>
+                    </div>
+                    <i class="fas fa-external-link-alt text-white/50"></i>
+                </button>
+                
+                <button id="phone-contact" class="w-full contact-item glass-button rounded-2xl p-4 flex items-center space-x-4 text-left">
+                    <div class="w-12 h-12 bg-gradient-to-br from-green-400 to-green-600 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-phone text-xl text-white"></i>
+                    </div>
+                    <div class="flex-1">
+                        <h4 class="font-semibold mb-1">客服电话</h4>
+                        <p id="contact-phone" class="text-white/70">400-123-4567</p>
+                    </div>
+                    <i class="fas fa-external-link-alt text-white/50"></i>
+                </button>
+                
+                <button id="website-contact" class="w-full contact-item glass-button rounded-2xl p-4 flex items-center space-x-4 text-left">
+                    <div class="w-12 h-12 bg-gradient-to-br from-purple-400 to-purple-600 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-globe text-xl text-white"></i>
+                    </div>
+                    <div class="flex-1">
+                        <h4 class="font-semibold mb-1">官方网站</h4>
+                        <p id="contact-website" class="text-white/70">www.xinyuban.com</p>
+                    </div>
+                    <i class="fas fa-external-link-alt text-white/50"></i>
+                </button>
+            </div>
+        </section>
+
+        <!-- 法律条款 -->
+        <section id="legal-links" class="glass-card rounded-3xl p-6 mb-6">
+            <h3 id="legal-title" class="text-lg font-semibold mb-4 gradient-text">法律条款</h3>
+            <div id="legal-list" class="space-y-3">
+                <button id="user-agreement-btn" class="w-full link-item glass-button rounded-2xl p-4 flex items-center justify-between">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-10 h-10 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-file-contract text-lg text-white"></i>
+                        </div>
+                        <span class="font-medium">用户协议</span>
+                    </div>
+                    <i class="fas fa-chevron-right text-white/50"></i>
+                </button>
+                
+                <button id="privacy-policy-btn" class="w-full link-item glass-button rounded-2xl p-4 flex items-center justify-between">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-10 h-10 bg-gradient-to-br from-indigo-400 to-purple-500 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-shield-alt text-lg text-white"></i>
+                        </div>
+                        <span class="font-medium">隐私政策</span>
+                    </div>
+                    <i class="fas fa-chevron-right text-white/50"></i>
+                </button>
+            </div>
+        </section>
+
+        <!-- 版权信息 -->
+        <section id="copyright-info" class="text-center">
+            <p class="text-white/60 text-sm">
+                © 2024 心愈伴科技有限公司
+            </p>
+            <p class="text-white/50 text-xs mt-2">
+                用心陪伴，温暖治愈
+            </p>
+        </section>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 返回按钮点击事件
+            document.querySelector('#back-btn').addEventListener('click', function() {
+                window.location.href = 'P-PERSONAL_CENTER.html';
+            });
+
+            // 邮箱联系点击事件
+            document.querySelector('#email-contact').addEventListener('click', function() {
+                const email = document.querySelector('#contact-email').textContent;
+                window.location.href = `mailto:${email}`;
+            });
+
+            // 电话联系点击事件
+            document.querySelector('#phone-contact').addEventListener('click', function() {
+                const phone = document.querySelector('#contact-phone').textContent;
+                window.location.href = `tel:${phone}`;
+            });
+
+            // 网站联系点击事件
+            document.querySelector('#website-contact').addEventListener('click', function() {
+                const website = document.querySelector('#contact-website').textContent;
+                window.open(`https://${website}`, '_blank');
+            });
+
+            // 用户协议点击事件
+            document.querySelector('#user-agreement-btn').addEventListener('click', function() {
+                // 跳转到用户协议页面（这里可以是一个新的页面或弹窗）
+                console.log('跳转到用户协议页面');
+                // 由于PRD中没有定义用户协议页面，这里暂时用console.log代替
+                alert('用户协议内容将在此显示');
+            });
+
+            // 隐私政策点击事件
+            document.querySelector('#privacy-policy-btn').addEventListener('click', function() {
+                // 跳转到隐私政策页面（这里可以是一个新的页面或弹窗）
+                console.log('跳转到隐私政策页面');
+                // 由于PRD中没有定义隐私政策页面，这里暂时用console.log代替
+                alert('隐私政策内容将在此显示');
+            });
+
+            // 添加页面加载动画
+            const cards = document.querySelectorAll('.glass-card');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                setTimeout(() => {
+                    card.style.transition = 'all 0.6s ease';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>心愈伴 - 职业压力管理</title>
+    <script src="https://unpkg.byted-static.com/coze/space_ppt_lib/1.0.3-alpha.12/lib/tailwindcss.js"></script>
+    <script src="https://unpkg.byted-static.com/fortawesome/fontawesome-free/6.7.2/js/all.min.js" data-auto-replace-svg="nest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#6366f1',
+                        secondary: '#8b5cf6',
+                        tertiary: '#06b6d4',
+                        success: '#10b981',
+                        danger: '#ef4444',
+                        warning: '#f59e0b',
+                        info: '#3b82f6',
+                        'glass-bg': 'rgba(255, 255, 255, 0.1)',
+                        'glass-border': 'rgba(255, 255, 255, 0.2)',
+                        'dark-glass': 'rgba(0, 0, 0, 0.1)',
+                    },
+                    backdropBlur: {
+                        'xs': '2px',
+                    },
+                    boxShadow: {
+                        'glass': '0 8px 32px 0 rgba(31, 38, 135, 0.37)',
+                        'glass-inset': 'inset 0 1px 0 0 rgba(255, 255, 255, 0.05)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        }
+        
+        .glass-button {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .glass-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.4);
+        }
+        
+        .gradient-text {
+            background: linear-gradient(45deg, #ffffff, #e5e7eb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .floating-animation {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .pulse-animation {
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .article-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 16px 48px 0 rgba(31, 38, 135, 0.4);
+        }
+
+        .service-card:hover {
+            transform: scale(1.02);
+        }
+    </style>
+</head>
+<body class="font-sans text-white overflow-x-hidden">
+    <!-- iOS状态栏 -->
+    <div id="status-bar" class="flex justify-between items-center px-6 py-2 text-sm font-medium">
+        <div class="flex items-center space-x-1">
+            <span>9:41</span>
+        </div>
+        <div class="flex items-center space-x-1">
+            <i class="fas fa-signal text-xs"></i>
+            <i class="fas fa-wifi text-xs"></i>
+            <div class="w-6 h-3 border border-white rounded-sm">
+                <div class="w-4 h-1.5 bg-white rounded-sm m-0.5"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 主要内容区域 -->
+    <div id="main-content" class="px-4 pb-8">
+        <!-- 顶部导航栏 -->
+        <header id="top-nav" class="flex items-center py-4 mb-6">
+            <button id="back-btn" class="mr-4 p-2 glass-button rounded-full hover:scale-110 transition-transform">
+                <i class="fas fa-arrow-left text-lg"></i>
+            </button>
+            <h1 id="page-title" class="text-xl font-bold gradient-text">职业压力管理</h1>
+        </header>
+
+        <!-- 服务入口区 -->
+        <section id="service-entries" class="mb-8">
+            <div id="service-grid" class="grid grid-cols-2 gap-4">
+                <button id="career-counseling-btn" class="glass-button rounded-2xl p-6 text-center service-card transition-all duration-300">
+                    <div class="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center">
+                        <i class="fas fa-user-tie text-2xl text-white"></i>
+                    </div>
+                    <h3 class="font-semibold mb-2">职业压力咨询</h3>
+                    <p class="text-sm text-white/70">专业职业心理疏导</p>
+                </button>
+                
+                <button id="career-assessment-btn" class="glass-button rounded-2xl p-6 text-center service-card transition-all duration-300">
+                    <div class="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center">
+                        <i class="fas fa-briefcase text-2xl text-white"></i>
+                    </div>
+                    <h3 class="font-semibold mb-2">职业兴趣测评</h3>
+                    <p class="text-sm text-white/70">发现职业兴趣方向</p>
+                </button>
+            </div>
+        </section>
+
+        <!-- 职业心理知识文章列表 -->
+        <section id="knowledge-section" class="mb-6">
+            <div class="flex justify-between items-center mb-4">
+                <h2 id="knowledge-title" class="text-lg font-semibold gradient-text">职业心理知识</h2>
+                <button id="more-articles" class="text-sm text-white/70 hover:text-white transition-colors">
+                    查看更多 <i class="fas fa-chevron-right ml-1"></i>
+                </button>
+            </div>
+            
+            <div id="articles-list" class="space-y-4">
+                <article id="article-1" class="glass-card rounded-2xl p-4 article-card transition-all duration-300 cursor-pointer" data-article-id="career_001">
+                    <div class="flex items-start space-x-4">
+                        <div class="w-12 h-12 bg-gradient-to-br from-blue-400 to-blue-600 rounded-xl flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-brain text-xl text-white"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="font-semibold mb-2">如何应对职场倦怠</h3>
+                            <p class="text-sm text-white/70 mb-3">职场倦怠是现代工作中常见的心理状态，了解其成因和应对方法，帮助你重新找回工作热情...</p>
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs text-white/50">2天前</span>
+                                <div class="flex items-center space-x-3 text-xs text-white/50">
+                                    <span><i class="fas fa-eye mr-1"></i>1.2k</span>
+                                    <span><i class="fas fa-heart mr-1"></i>89</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+
+                <article id="article-2" class="glass-card rounded-2xl p-4 article-card transition-all duration-300 cursor-pointer" data-article-id="career_002">
+                    <div class="flex items-start space-x-4">
+                        <div class="w-12 h-12 bg-gradient-to-br from-green-400 to-green-600 rounded-xl flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-users text-xl text-white"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="font-semibold mb-2">职场人际关系处理技巧</h3>
+                            <p class="text-sm text-white/70 mb-3">良好的职场人际关系是职业成功的重要因素，学会有效沟通和冲突解决，建立和谐的工作环境...</p>
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs text-white/50">3天前</span>
+                                <div class="flex items-center space-x-3 text-xs text-white/50">
+                                    <span><i class="fas fa-eye mr-1"></i>856</span>
+                                    <span><i class="fas fa-heart mr-1"></i>67</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+
+                <article id="article-3" class="glass-card rounded-2xl p-4 article-card transition-all duration-300 cursor-pointer" data-article-id="career_003">
+                    <div class="flex items-start space-x-4">
+                        <div class="w-12 h-12 bg-gradient-to-br from-purple-400 to-purple-600 rounded-xl flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-chart-line text-xl text-white"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="font-semibold mb-2">职业规划与发展策略</h3>
+                            <p class="text-sm text-white/70 mb-3">制定清晰的职业目标，规划发展路径，掌握职场晋升的关键要素，实现职业理想...</p>
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs text-white/50">5天前</span>
+                                <div class="flex items-center space-x-3 text-xs text-white/50">
+                                    <span><i class="fas fa-eye mr-1"></i>1.5k</span>
+                                    <span><i class="fas fa-heart mr-1"></i>124</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+
+                <article id="article-4" class="glass-card rounded-2xl p-4 article-card transition-all duration-300 cursor-pointer" data-article-id="career_004">
+                    <div class="flex items-start space-x-4">
+                        <div class="w-12 h-12 bg-gradient-to-br from-orange-400 to-orange-600 rounded-xl flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-balance-scale text-xl text-white"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="font-semibold mb-2">工作与生活平衡的艺术</h3>
+                            <p class="text-sm text-white/70 mb-3">学会在繁忙的工作中找到平衡点，合理安排时间，保持身心健康，提升生活质量...</p>
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs text-white/50">1周前</span>
+                                <div class="flex items-center space-x-3 text-xs text-white/50">
+                                    <span><i class="fas fa-eye mr-1"></i>2.1k</span>
+                                    <span><i class="fas fa-heart mr-1"></i>156</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+
+                <article id="article-5" class="glass-card rounded-2xl p-4 article-card transition-all duration-300 cursor-pointer" data-article-id="career_005">
+                    <div class="flex items-start space-x-4">
+                        <div class="w-12 h-12 bg-gradient-to-br from-pink-400 to-pink-600 rounded-xl flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-lightbulb text-xl text-white"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="font-semibold mb-2">提升职场抗压能力</h3>
+                            <p class="text-sm text-white/70 mb-3">掌握有效的压力管理技巧，培养积极的心态，在面对工作压力时保持冷静和高效...</p>
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs text-white/50">1周前</span>
+                                <div class="flex items-center space-x-3 text-xs text-white/50">
+                                    <span><i class="fas fa-eye mr-1"></i>1.8k</span>
+                                    <span><i class="fas fa-heart mr-1"></i>98</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <!-- 职业压力自测 -->
+        <section id="self-test-section" class="mb-6">
+            <div class="glass-card rounded-2xl p-6 floating-animation">
+                <div class="flex items-center space-x-4 mb-4">
+                    <div class="w-12 h-12 bg-gradient-to-br from-red-400 to-red-600 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-stethoscope text-xl text-white"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold">职业压力自测</h3>
+                        <p class="text-sm text-white/70">了解你的职业压力水平</p>
+                    </div>
+                </div>
+                <p class="text-sm text-white/80 mb-4">通过专业量表评估，了解自己的职业压力状况，获得个性化的改善建议。</p>
+                <button id="stress-test-btn" class="w-full py-3 glass-button rounded-xl font-medium hover:scale-105 transition-transform">
+                    开始自测
+                </button>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 返回按钮点击事件
+            document.querySelector('#back-btn').addEventListener('click', function() {
+                window.location.href = 'P-HOME.html';
+            });
+
+            // 职业压力咨询按钮点击事件
+            document.querySelector('#career-counseling-btn').addEventListener('click', function() {
+                window.location.href = 'P-COUNSELING.html?theme_id=职业发展焦虑';
+            });
+
+            // 职业兴趣测评按钮点击事件
+            document.querySelector('#career-assessment-btn').addEventListener('click', function() {
+                window.location.href = 'P-ASSESSMENT_QUESTIONS.html?scale_id=职业兴趣测评';
+            });
+
+            // 职业压力自测按钮点击事件
+            document.querySelector('#stress-test-btn').addEventListener('click', function() {
+                window.location.href = 'P-ASSESSMENT_QUESTIONS.html?scale_id=职业压力测评';
+            });
+
+            // 查看更多文章按钮点击事件
+            document.querySelector('#more-articles').addEventListener('click', function() {
+                window.location.href = 'P-KNOWLEDGE.html?category=职业心理';
+            });
+
+            // 文章列表项点击事件
+            const articles = document.querySelectorAll('.article-card');
+            articles.forEach(article => {
+                article.addEventListener('click', function() {
+                    const articleId = this.getAttribute('data-article-id');
+                    window.location.href = `P-ARTICLE_DETAIL.html?article_id=${articleId}`;
+                });
+            });
+
+            // 添加页面加载动画
+            const cards = document.querySelectorAll('.glass-card, .glass-button');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                setTimeout(() => {
+                    card.style.transition = 'all 0.6s ease';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+        });
+    </script>
+</body>
+</html>

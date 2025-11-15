@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>心愈伴 - 睡眠改善指导</title>
+    <script src="https://unpkg.byted-static.com/coze/space_ppt_lib/1.0.3-alpha.12/lib/tailwindcss.js"></script>
+    <script src="https://unpkg.byted-static.com/fortawesome/fontawesome-free/6.7.2/js/all.min.js" data-auto-replace-svg="nest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#6366f1',
+                        secondary: '#8b5cf6',
+                        tertiary: '#06b6d4',
+                        success: '#10b981',
+                        danger: '#ef4444',
+                        warning: '#f59e0b',
+                        info: '#3b82f6',
+                        'glass-bg': 'rgba(255, 255, 255, 0.1)',
+                        'glass-border': 'rgba(255, 255, 255, 0.2)',
+                        'dark-glass': 'rgba(0, 0, 0, 0.1)',
+                    },
+                    backdropBlur: {
+                        'xs': '2px',
+                    },
+                    boxShadow: {
+                        'glass': '0 8px 32px 0 rgba(31, 38, 135, 0.37)',
+                        'glass-inset': 'inset 0 1px 0 0 rgba(255, 255, 255, 0.05)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        }
+        
+        .glass-button {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .glass-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.4);
+        }
+        
+        .gradient-text {
+            background: linear-gradient(45deg, #ffffff, #e5e7eb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .floating-animation {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .audio-progress {
+            background: linear-gradient(90deg, #6366f1, #8b5cf6);
+            height: 4px;
+            border-radius: 2px;
+            transition: width 0.3s ease;
+        }
+        
+        .playing {
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+    </style>
+</head>
+<body class="font-sans text-white overflow-x-hidden">
+    <!-- iOS状态栏 -->
+    <div id="status-bar" class="flex justify-between items-center px-6 py-2 text-sm font-medium">
+        <div class="flex items-center space-x-1">
+            <span>9:41</span>
+        </div>
+        <div class="flex items-center space-x-1">
+            <i class="fas fa-signal text-xs"></i>
+            <i class="fas fa-wifi text-xs"></i>
+            <div class="w-6 h-3 border border-white rounded-sm">
+                <div class="w-4 h-1.5 bg-white rounded-sm m-0.5"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 主要内容区域 -->
+    <div id="main-content" class="px-4 pb-6">
+        <!-- 顶部导航栏 -->
+        <header id="top-nav" class="flex items-center py-4 mb-6">
+            <button id="back-btn" class="p-2 glass-button rounded-full mr-4">
+                <i class="fas fa-arrow-left text-lg"></i>
+            </button>
+            <h1 id="page-title" class="text-xl font-bold gradient-text">睡眠改善指导</h1>
+        </header>
+
+        <!-- 睡眠状态概览 -->
+        <section id="sleep-overview" class="glass-card rounded-3xl p-6 mb-6 floating-animation">
+            <h2 id="overview-title" class="text-lg font-semibold mb-4 gradient-text">你的睡眠状态</h2>
+            <div id="sleep-metrics" class="grid grid-cols-3 gap-4">
+                <div id="sleep-duration" class="text-center">
+                    <div class="w-12 h-12 mx-auto mb-2 bg-gradient-to-br from-indigo-400 to-purple-500 rounded-full flex items-center justify-center">
+                        <i class="fas fa-clock text-xl text-white"></i>
+                    </div>
+                    <p class="text-xs text-white/70">睡眠时长</p>
+                    <p class="text-lg font-bold gradient-text">7.5小时</p>
+                </div>
+                <div id="sleep-quality" class="text-center">
+                    <div class="w-12 h-12 mx-auto mb-2 bg-gradient-to-br from-blue-400 to-cyan-500 rounded-full flex items-center justify-center">
+                        <i class="fas fa-moon text-xl text-white"></i>
+                    </div>
+                    <p class="text-xs text-white/70">睡眠质量</p>
+                    <p class="text-lg font-bold gradient-text">良好</p>
+                </div>
+                <div id="sleep-efficiency" class="text-center">
+                    <div class="w-12 h-12 mx-auto mb-2 bg-gradient-to-br from-green-400 to-emerald-500 rounded-full flex items-center justify-center">
+                        <i class="fas fa-chart-line text-xl text-white"></i>
+                    </div>
+                    <p class="text-xs text-white/70">睡眠效率</p>
+                    <p class="text-lg font-bold gradient-text">89%</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 助眠音频/冥想列表 -->
+        <section id="sleep-audio-section" class="mb-6">
+            <h2 id="audio-title" class="text-lg font-semibold mb-4 gradient-text">助眠音频</h2>
+            <div id="audio-list" class="space-y-4">
+                <div id="audio-1" class="glass-card rounded-2xl p-4 flex items-center space-x-4">
+                    <div class="relative">
+                        <button id="play-btn-1" class="w-12 h-12 bg-gradient-to-br from-indigo-400 to-purple-500 rounded-xl flex items-center justify-center">
+                            <i id="play-icon-1" class="fas fa-play text-xl text-white"></i>
+                        </button>
+                        <div id="playing-indicator-1" class="absolute inset-0 bg-gradient-to-br from-indigo-400 to-purple-500 rounded-xl opacity-0 transition-opacity duration-300"></div>
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="font-semibold mb-1">深度睡眠白噪音</h3>
+                        <p class="text-sm text-white/70 mb-2">大自然的声音帮助你快速入睡</p>
+                        <div class="w-full bg-white/20 rounded-full h-1">
+                            <div id="progress-1" class="audio-progress w-0"></div>
+                        </div>
+                        <p class="text-xs text-white/50 mt-1">00:00 / 30:00</p>
+                    </div>
+                    <i class="fas fa-chevron-right text-white/50"></i>
+                </div>
+
+                <div id="audio-2" class="glass-card rounded-2xl p-4 flex items-center space-x-4">
+                    <div class="relative">
+                        <button id="play-btn-2" class="w-12 h-12 bg-gradient-to-br from-blue-400 to-cyan-500 rounded-xl flex items-center justify-center">
+                            <i id="play-icon-2" class="fas fa-play text-xl text-white"></i>
+                        </button>
+                        <div id="playing-indicator-2" class="absolute inset-0 bg-gradient-to-br from-blue-400 to-cyan-500 rounded-xl opacity-0 transition-opacity duration-300"></div>
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="font-semibold mb-1">引导式冥想放松</h3>
+                        <p class="text-sm text-white/70 mb-2">专业引导帮助身心放松</p>
+                        <div class="w-full bg-white/20 rounded-full h-1">
+                            <div id="progress-2" class="audio-progress w-0"></div>
+                        </div>
+                        <p class="text-xs text-white/50 mt-1">00:00 / 20:00</p>
+                    </div>
+                    <i class="fas fa-chevron-right text-white/50"></i>
+                </div>
+
+                <div id="audio-3" class="glass-card rounded-2xl p-4 flex items-center space-x-4">
+                    <div class="relative">
+                        <button id="play-btn-3" class="w-12 h-12 bg-gradient-to-br from-green-400 to-emerald-500 rounded-xl flex items-center justify-center">
+                            <i id="play-icon-3" class="fas fa-play text-xl text-white"></i>
+                        </button>
+                        <div id="playing-indicator-3" class="absolute inset-0 bg-gradient-to-br from-green-400 to-emerald-500 rounded-xl opacity-0 transition-opacity duration-300"></div>
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="font-semibold mb-1">雨声助眠</h3>
+                        <p class="text-sm text-white/70 mb-2">轻柔的雨声营造宁静氛围</p>
+                        <div class="w-full bg-white/20 rounded-full h-1">
+                            <div id="progress-3" class="audio-progress w-0"></div>
+                        </div>
+                        <p class="text-xs text-white/50 mt-1">00:00 / 45:00</p>
+                    </div>
+                    <i class="fas fa-chevron-right text-white/50"></i>
+                </div>
+            </div>
+        </section>
+
+        <!-- 睡眠知识文章 -->
+        <section id="sleep-knowledge" class="mb-6">
+            <div class="flex justify-between items-center mb-4">
+                <h2 id="knowledge-title" class="text-lg font-semibold gradient-text">睡眠知识</h2>
+                <button id="more-articles" class="text-sm text-white/70 hover:text-white transition-colors">
+                    更多 <i class="fas fa-chevron-right ml-1"></i>
+                </button>
+            </div>
+            <div id="articles-list" class="space-y-3">
+                <div id="article-1" class="glass-card rounded-2xl p-4 flex items-center space-x-4 cursor-pointer hover:scale-105 transition-transform">
+                    <div class="w-12 h-12 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-book text-xl text-white"></i>
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="font-semibold mb-1">如何建立健康的睡眠习惯</h3>
+                        <p class="text-sm text-white/70">科学的睡眠习惯对身体健康至关重要</p>
+                        <p class="text-xs text-white/50 mt-1">5分钟阅读 · 2天前</p>
+                    </div>
+                    <i class="fas fa-chevron-right text-white/50"></i>
+                </div>
+
+                <div id="article-2" class="glass-card rounded-2xl p-4 flex items-center space-x-4 cursor-pointer hover:scale-105 transition-transform">
+                    <div class="w-12 h-12 bg-gradient-to-br from-pink-400 to-rose-500 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-brain text-xl text-white"></i>
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="font-semibold mb-1">睡眠对心理健康的影响</h3>
+                        <p class="text-sm text-white/70">深度解析睡眠与情绪调节的关系</p>
+                        <p class="text-xs text-white/50 mt-1">8分钟阅读 · 1周前</p>
+                    </div>
+                    <i class="fas fa-chevron-right text-white/50"></i>
+                </div>
+
+                <div id="article-3" class="glass-card rounded-2xl p-4 flex items-center space-x-4 cursor-pointer hover:scale-105 transition-transform">
+                    <div class="w-12 h-12 bg-gradient-to-br from-indigo-400 to-purple-500 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-search text-xl text-white"></i>
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="font-semibold mb-1">常见睡眠障碍及应对方法</h3>
+                        <p class="text-sm text-white/70">了解失眠、打鼾等常见问题的解决之道</p>
+                        <p class="text-xs text-white/50 mt-1">10分钟阅读 · 3天前</p>
+                    </div>
+                    <i class="fas fa-chevron-right text-white/50"></i>
+                </div>
+            </div>
+        </section>
+
+        <!-- 个性化睡眠建议 -->
+        <section id="sleep-suggestions" class="mb-6">
+            <h2 id="suggestions-title" class="text-lg font-semibold mb-4 gradient-text">为你定制的建议</h2>
+            <div id="suggestions-list" class="space-y-4">
+                <div id="suggestion-1" class="glass-card rounded-2xl p-4">
+                    <div class="flex items-start space-x-4">
+                        <div class="w-10 h-10 bg-gradient-to-br from-blue-400 to-cyan-500 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-bed text-lg text-white"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="font-semibold mb-2">固定睡眠时间</h3>
+                            <p class="text-sm text-white/70 mb-3">建议每天在相同的时间上床睡觉和起床，包括周末。这有助于建立健康的生物钟。</p>
+                            <div class="flex items-center space-x-2">
+                                <span class="text-xs bg-blue-500/20 text-blue-300 px-2 py-1 rounded-full">容易实施</span>
+                                <span class="text-xs bg-green-500/20 text-green-300 px-2 py-1 rounded-full">高效果</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="suggestion-2" class="glass-card rounded-2xl p-4">
+                    <div class="flex items-start space-x-4">
+                        <div class="w-10 h-10 bg-gradient-to-br from-purple-400 to-pink-500 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-moon text-lg text-white"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="font-semibold mb-2">营造理想睡眠环境</h3>
+                            <p class="text-sm text-white/70 mb-3">保持卧室安静、黑暗、凉爽。可以使用眼罩、耳塞或白噪音机器来改善睡眠环境。</p>
+                            <div class="flex items-center space-x-2">
+                                <span class="text-xs bg-purple-500/20 text-purple-300 px-2 py-1 rounded-full">环境调整</span>
+                                <span class="text-xs bg-yellow-500/20 text-yellow-300 px-2 py-1 rounded-full">中等难度</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="suggestion-3" class="glass-card rounded-2xl p-4">
+                    <div class="flex items-start space-x-4">
+                        <div class="w-10 h-10 bg-gradient-to-br from-green-400 to-emerald-500 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-leaf text-lg text-white"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="font-semibold mb-2">睡前放松活动</h3>
+                            <p class="text-sm text-white/70 mb-3">睡前1小时避免使用电子设备，可以尝试阅读、冥想、深呼吸练习或轻柔的伸展运动。</p>
+                            <div class="flex items-center space-x-2">
+                                <span class="text-xs bg-green-500/20 text-green-300 px-2 py-1 rounded-full">容易实施</span>
+                                <span class="text-xs bg-blue-500/20 text-blue-300 px-2 py-1 rounded-full">高效果</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 返回按钮点击事件
+            document.querySelector('#back-btn').addEventListener('click', function() {
+                window.location.href = 'P-HOME.html';
+            });
+
+            // 文章点击事件
+            document.querySelector('#article-1').addEventListener('click', function() {
+                window.location.href = 'P-ARTICLE_DETAIL.html?articleId=sleep-habits';
+            });
+
+            document.querySelector('#article-2').addEventListener('click', function() {
+                window.location.href = 'P-ARTICLE_DETAIL.html?articleId=sleep-mental-health';
+            });
+
+            document.querySelector('#article-3').addEventListener('click', function() {
+                window.location.href = 'P-ARTICLE_DETAIL.html?articleId=sleep-disorders';
+            });
+
+            // 更多文章点击事件
+            document.querySelector('#more-articles').addEventListener('click', function() {
+                window.location.href = 'P-KNOWLEDGE.html?category=sleep';
+            });
+
+            // 音频播放功能
+            let currentPlayingAudio = null;
+            let audioProgressIntervals = {};
+
+            function playAudio(audioId, duration) {
+                // 停止当前播放的音频
+                if (currentPlayingAudio && currentPlayingAudio !== audioId) {
+                    stopAudio(currentPlayingAudio);
+                }
+
+                const playBtn = document.querySelector(`#play-btn-${audioId}`);
+                const playIcon = document.querySelector(`#play-icon-${audioId}`);
+                const playingIndicator = document.querySelector(`#playing-indicator-${audioId}`);
+                const progressBar = document.querySelector(`#progress-${audioId}`);
+
+                if (currentPlayingAudio === audioId) {
+                    // 当前音频正在播放，暂停它
+                    stopAudio(audioId);
+                    return;
+                }
+
+                // 开始播放
+                currentPlayingAudio = audioId;
+                playIcon.className = 'fas fa-pause text-xl text-white';
+                playingIndicator.style.opacity = '0.3';
+                playBtn.classList.add('playing');
+
+                // 模拟播放进度
+                let progress = 0;
+                const interval = setInterval(() => {
+                    progress += 0.5;
+                    const progressPercent = Math.min((progress / duration) * 100, 100);
+                    progressBar.style.width = progressPercent + '%';
+
+                    const currentMinutes = Math.floor(progress / 60);
+                    const currentSeconds = Math.floor(progress % 60);
+                    const durationMinutes = Math.floor(duration / 60);
+                    const durationSeconds = Math.floor(duration % 60);
+
+                    const timeDisplay = document.querySelector(`#progress-${audioId}`).nextElementSibling;
+                    timeDisplay.textContent = 
+                        `${currentMinutes.toString().padStart(2, '0')}:${currentSeconds.toString().padStart(2, '0')} / ${durationMinutes.toString().padStart(2, '0')}:${durationSeconds.toString().padStart(2, '0')}`;
+
+                    if (progress >= duration) {
+                        stopAudio(audioId);
+                    }
+                }, 500);
+
+                audioProgressIntervals[audioId] = interval;
+            }
+
+            function stopAudio(audioId) {
+                if (audioId === currentPlayingAudio) {
+                    currentPlayingAudio = null;
+                }
+
+                const playBtn = document.querySelector(`#play-btn-${audioId}`);
+                const playIcon = document.querySelector(`#play-icon-${audioId}`);
+                const playingIndicator = document.querySelector(`#playing-indicator-${audioId}`);
+                const progressBar = document.querySelector(`#progress-${audioId}`);
+
+                playIcon.className = 'fas fa-play text-xl text-white';
+                playingIndicator.style.opacity = '0';
+                playBtn.classList.remove('playing');
+
+                // 清除进度间隔
+                if (audioProgressIntervals[audioId]) {
+                    clearInterval(audioProgressIntervals[audioId]);
+                    delete audioProgressIntervals[audioId];
+                }
+
+                // 重置进度
+                setTimeout(() => {
+                    progressBar.style.width = '0%';
+                    const timeDisplay = document.querySelector(`#progress-${audioId}`).nextElementSibling;
+                    const duration = audioId === '1' ? 1800 : audioId === '2' ? 1200 : 2700; // 30分钟、20分钟、45分钟转换为秒
+                    const durationMinutes = Math.floor(duration / 60);
+                    const durationSeconds = Math.floor(duration % 60);
+                    timeDisplay.textContent = `00:00 / ${durationMinutes.toString().padStart(2, '0')}:${durationSeconds.toString().padStart(2, '0')}`;
+                }, 300);
+            }
+
+            // 音频按钮点击事件
+            document.querySelector('#play-btn-1').addEventListener('click', function() {
+                playAudio('1', 1800); // 30分钟 = 1800秒
+            });
+
+            document.querySelector('#play-btn-2').addEventListener('click', function() {
+                playAudio('2', 1200); // 20分钟 = 1200秒
+            });
+
+            document.querySelector('#play-btn-3').addEventListener('click', function() {
+                playAudio('3', 2700); // 45分钟 = 2700秒
+            });
+
+            // 建议卡片点击事件
+            document.querySelector('#suggestion-1').addEventListener('click', function() {
+                console.log('查看固定睡眠时间的详细建议');
+                // 这里可以展开显示更详细的建议内容
+            });
+
+            document.querySelector('#suggestion-2').addEventListener('click', function() {
+                console.log('查看睡眠环境的详细建议');
+                // 这里可以展开显示更详细的建议内容
+            });
+
+            document.querySelector('#suggestion-3').addEventListener('click', function() {
+                console.log('查看睡前放松活动的详细建议');
+                // 这里可以展开显示更详细的建议内容
+            });
+
+            // 页面加载动画
+            const cards = document.querySelectorAll('.glass-card');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                setTimeout(() => {
+                    card.style.transition = 'all 0.6s ease';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+        });
+    </script>
+</body>
+</html>

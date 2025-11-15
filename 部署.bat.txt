@@ -1,0 +1,27 @@
+@echo off
+echo 心愈伴 - 快速部署
+set /p username=GitHub用户名: 
+set /p reponame=仓库名称(默认xinyuban): 
+if "%reponame%"=="" set reponame=xinyubam
+
+echo 创建配置文件...
+echo {"version":2,"builds":[{"src":"api/*.py","use":"@vercel/python"}]} > vercel.json
+echo Flask==2.3.3 > requirements.txt
+echo # gitignore > .gitignore
+
+if not exist api mkdir api
+echo from flask import Flask, jsonify > api\index.py
+echo app = Flask(__name__) >> api\index.py
+echo @app.route('/api/login') >> api\index.py
+echo def login(): return jsonify({'success':True}) >> api\index.py
+echo app.run() >> api\index.py
+
+echo window.CONFIG={API_BASE_URL:'https://'+window.location.hostname+'/api'} > config.js
+
+git init && git add . && git commit -m "init"
+echo.
+echo 访问 https://github.com/new 创建仓库 %reponame%
+echo 然后运行: git remote add origin https://github.com/%username%/%reponame%.git
+echo 然后: git push -u origin main
+echo 最后访问 https://vercel.com 部署
+pause
