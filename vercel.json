@@ -2,8 +2,12 @@
   "version": 2,
   "routes": [
     {
-      "src": "/(.*)",
+      "src": "/",
       "dest": "/index.html"
+    },
+    {
+      "src": "/P-(.*)",
+      "dest": "/P-$1"
     }
   ]
 }

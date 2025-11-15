@@ -4,8 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>心愈伴 - 首页</title>
-    <script src="https://unpkg.byted-static.com/coze/space_ppt_lib/1.0.3-alpha.12/lib/tailwindcss.js"></script>
-    <script src="https://unpkg.byted-static.com/fortawesome/fontawesome-free/6.7.2/js/all.min.js" data-auto-replace-svg="nest"></script>
+    <script>
+        // 自动重定向到主首页
+        window.location.href = 'P-HOME.html';
+    </script>
+</head>
+<body>
+    <div style="text-align: center; margin-top: 100px; font-family: Arial, sans-serif;">
+        <p>正在跳转到首页...</p>
+    </div>
+</body>
+</html>
     <script>
         tailwind.config = {
             theme: {
@@ -198,25 +207,77 @@
     </div>
 
     <!-- 底部导航栏 -->
-    <nav id="bottom-nav" class="fixed bottom-0 left-0 right-0 glass-nav">
-        <div class="flex justify-around items-center py-2">
-            <button id="home-btn" class="flex flex-col items-center p-2 text-white">
-                <i class="fas fa-home text-xl mb-1"></i>
-                <span class="text-xs">首页</span>
-            </button>
-            <button id="knowledge-btn" class="flex flex-col items-center p-2 text-white/70 hover:text-white transition-colors">
-                <i class="fas fa-book-open text-xl mb-1"></i>
-                <span class="text-xs">知识</span>
-            </button>
-            <button id="history-btn" class="flex flex-col items-center p-2 text-white/70 hover:text-white transition-colors">
-                <i class="fas fa-history text-xl mb-1"></i>
-                <span class="text-xs">历史</span>
-            </button>
-            <button id="profile-btn" class="flex flex-col items-center p-2 text-white/70 hover:text-white transition-colors">
-                <i class="fas fa-user text-xl mb-1"></i>
-                <span class="text-xs">我的</span>
-            </button>
-        </div>
+    <nav id="bottom-nav" class="fixed bottom-0 left-0 right-0 glass-nav flex justify-around items-center h-16 px-2 z-40">
+        <a id="nav-home" href="#" class="flex flex-col items-center p-2 text-white">
+            <i class="fas fa-home text-xl mb-1"></i>
+            <span class="text-xs">首页</span>
+        </a>
+        <a id="nav-counseling" href="#" class="flex flex-col items-center p-2 text-white/60 hover:text-white transition-colors">
+            <i class="fas fa-user-md text-xl mb-1"></i>
+            <span class="text-xs">咨询</span>
+        </a>
+        <a id="nav-companionship" href="#" class="flex flex-col items-center p-2 text-white/60 hover:text-white transition-colors">
+            <i class="fas fa-heart text-xl mb-1"></i>
+            <span class="text-xs">陪伴</span>
+        </a>
+        <a id="nav-profile" href="#" class="flex flex-col items-center p-2 text-white/60 hover:text-white transition-colors">
+            <i class="fas fa-user text-xl mb-1"></i>
+            <span class="text-xs">我的</span>
+        </a>
     </nav>
+
+    <script>
+        // 页面跳转功能
+        document.addEventListener('DOMContentLoaded', function() {
+            // 功能按钮跳转
+            document.getElementById('counseling-btn').addEventListener('click', function() {
+                window.location.href = 'P-COUNSELING.html';
+            });
+            
+            document.getElementById('companionship-btn').addEventListener('click', function() {
+                window.location.href = 'P-COMPANIONSHIP.html';
+            });
+            
+            document.getElementById('assessment-btn').addEventListener('click', function() {
+                window.location.href = 'P-ASSESSMENT.html';
+            });
+            
+            document.getElementById('emotion-log-btn').addEventListener('click', function() {
+                window.location.href = 'P-EMOTION_LOG.html';
+            });
+            
+            // 底部导航跳转
+            document.querySelector('#nav-home').addEventListener('click', function(e) {
+                e.preventDefault();
+                // 已在首页，无需操作
+            });
+            
+            document.querySelector('#nav-counseling').addEventListener('click', function(e) {
+                e.preventDefault();
+                window.location.href = 'P-COUNSELING.html';
+            });
+            
+            document.querySelector('#nav-companionship').addEventListener('click', function(e) {
+                e.preventDefault();
+                window.location.href = 'P-COMPANIONSHIP.html';
+            });
+            
+            document.querySelector('#nav-profile').addEventListener('click', function(e) {
+                e.preventDefault();
+                window.location.href = 'P-PERSONAL_CENTER.html';
+            });
+            
+            // 用户头像点击跳转到个人中心
+            document.getElementById('user-profile').addEventListener('click', function() {
+                window.location.href = 'P-PERSONAL_CENTER.html';
+            });
+            
+            // 通知按钮点击跳转
+            document.getElementById('notification-btn').addEventListener('click', function() {
+                // 可以跳转到通知页面或显示通知列表
+                alert('通知功能开发中...');
+            });
+        });
+    </script>
 </body>
 </html>
